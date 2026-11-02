@@ -37,7 +37,7 @@ first use and is git-ignored.
     javac -d out -cp "$CP" src/model/MonsterStats.java src/model/SQLiteDatabase.java test/src/model/SQLiteDatabaseTest.java
     java -jar lib/junit-platform-console-standalone-1.10.3.jar execute -cp "out;lib/sqlite-jdbc-3.46.1.3.jar;lib/slf4j-api-2.0.13.jar" --scan-classpath out
 
-TCSS 360 - Dungeon Adventure - Group 7 - Iteration 1 (Oct 26 - Nov 1, 2026)
+# Group 7 Iteration 1 (Oct 26 - Nov 1, 2026)
 
 TEAM MEMBERS
 Alex Douk, John Nguyen, Nathan Chiu, Liiban Isse
