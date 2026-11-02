@@ -54,6 +54,7 @@ WORK COMPLETED
 - Total: 9 hours.
 
 NOTE ON LOGGED TIME
+
 The YouTrack time for DAT-2 is entered as "2d". The real time spent was
 7 hours. YouTrack counts one day as 8 hours, so it displays and reports as 16 hours.
 The correct figure for DAT-2 is 7 hours.
@@ -81,6 +82,7 @@ WORK COMPLETED
 - Total: 10 hours.
 
 NOTE ON LOGGED TIME
+
 DAT-1 was completed in the span of 3-4 days, but due to how YouTrack works, assigning multiple days on one task will result in an inaccurate time log. As a result, a time estimate of 8 hours were logged on a single day.
 
 ISSUES IN ITERATION 1
