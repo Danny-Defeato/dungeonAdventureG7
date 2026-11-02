@@ -138,6 +138,43 @@ class SQLiteDatabaseTest {
     }
 
     @Test
+    void getAllTypesListsSeededTypesAlphabetically() {
+        assertEquals(java.util.List.of("Gremlin", "Ogre", "Skeleton"),
+                db.getAllTypes());
+    }
+
+    @Test
+    void getAllTypesIncludesInsertedType() {
+        db.insertMonsterStats("Imp", new MonsterStats(11, 2, 5, 4, 0.25, 0.75, 1, 3));
+        assertTrue(db.getAllTypes().contains("Imp"));
+        assertEquals(4, db.getAllTypes().size());
+    }
+
+    @Test
+    void openExistingOpensExistingFile() {
+        try (SQLiteDatabase again = SQLiteDatabase.openExisting(tempDir.resolve("test.db"))) {
+            assertEquals(200, again.loadMonsterStats("Ogre").getHitPoints());
+        }
+    }
+
+    @Test
+    void openExistingMissingFileNamesPathAndDoesNotCreateIt() {
+        final Path missing = tempDir.resolve("dungeon.db");
+        final IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> SQLiteDatabase.openExisting(missing));
+        assertTrue(e.getMessage().contains(missing.toAbsolutePath().toString()));
+        assertTrue(Files.notExists(missing));
+    }
+
+    @Test
+    void openExistingRejectsNonDatabaseFile() throws IOException {
+        final Path junk = tempDir.resolve("junk.db");
+        Files.writeString(junk, "this is not a sqlite database at all, just text");
+        assertThrows(IllegalStateException.class,
+                () -> SQLiteDatabase.openExisting(junk));
+    }
+
+    @Test
     void invalidStatsAreRejected() {
         assertThrows(IllegalArgumentException.class,
                 () -> new MonsterStats(0, 1, 2, 1, 0.5, 0.5, 1, 2));

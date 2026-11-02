@@ -6,6 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -44,6 +48,9 @@ public class SQLiteDatabase implements AutoCloseable {
 
     private static final String COUNT_SQL = "SELECT COUNT(*) FROM monster_stats";
 
+    private static final String TYPES_SQL =
+            "SELECT type FROM monster_stats ORDER BY type";
+
     /** The JDBC url of the database. */
     private final String url;
 
@@ -69,6 +76,44 @@ public class SQLiteDatabase implements AutoCloseable {
             close();
             throw new IllegalStateException("Could not open database at " + url, e);
         }
+    }
+
+    /**
+     * Opens a database file that must already exist, as the game does at
+     * launch (SRS 3.1). Unlike the constructor, this never creates a new file.
+     *
+     * @param file the path of the database file, such as {@code dungeon.db}
+     * @return the opened database
+     * @throws IllegalStateException if the file is missing, unreadable, or not
+     *         a usable SQLite database; the message names the absolute path
+     */
+    public static SQLiteDatabase openExisting(final Path file) {
+        Objects.requireNonNull(file, "file");
+        final Path abs = file.toAbsolutePath();
+        if (!Files.isRegularFile(abs) || !Files.isReadable(abs)) {
+            throw new IllegalStateException(
+                    "Monster database not found or unreadable: " + abs);
+        }
+        return new SQLiteDatabase("jdbc:sqlite:" + abs);
+    }
+
+    /**
+     * Returns the names of every monster type stored in the database.
+     *
+     * @return the type names in alphabetical order, never null
+     * @throws IllegalStateException if the database operation fails
+     */
+    public List<String> getAllTypes() {
+        final List<String> types = new ArrayList<>();
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(TYPES_SQL)) {
+            while (rs.next()) {
+                types.add(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not list monster types", e);
+        }
+        return types;
     }
 
     /**
