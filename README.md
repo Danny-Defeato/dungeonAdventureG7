@@ -90,7 +90,7 @@ ISSUES IN ITERATION 1
   room, nothing happens. 
 
 
-liiban
+Liiban Isse
 
 Swing refresher (2h)
   Reviewed Swing basics needed for the GUI: JFrame, JMenuBar, JMenu,
