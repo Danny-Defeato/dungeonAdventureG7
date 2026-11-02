@@ -42,7 +42,8 @@ first use and is git-ignored.
 TEAM MEMBERS
 Alex Douk, John Nguyen, Nathan Chiu, Liiban Isse
 
-ALEX DOUK - WORK COMPLETED
+Alex Douk
+WORK COMPLETED
 - DAT-2 Set up SQLite Database (7 hours actual): MonsterStats class, SQLiteDatabase
   class (monster_stats table, seeded with Ogre/Gremlin/Skeleton from the SRS,
   insert and load methods), JUnit tests, and repo setup (README, jars in lib/).
