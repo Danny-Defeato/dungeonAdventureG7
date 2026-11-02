@@ -76,3 +76,23 @@ ISSUES IN ITERATION 1
 john
 nathan
 liiban
+Swing refresher (2h)
+  Reviewed Swing basics needed for the GUI: JFrame, JMenuBar, JMenu,
+  JMenuItem, JOptionPane and action listeners. Built a practice window.
+ 
+Main game window (3h)
+  Created GameView (src.view), which extends JFrame: titled "Dungeon
+  Adventure", 1100 x 750 (SRS 2.4), centered, and closes the program on exit.
+  Includes setting up IntelliJ, the team GitHub repo and fixing the JUnit 5
+  build error.
+ 
+File and Help menus (3h)
+  Added the menu bar (SRS 3.11, FR-MNU-1). File: New Game, Save Game,
+  Load Game, Exit. Help: About, Game Play Instructions. About, Instructions
+  and Exit work; New, Save and Load are placeholders until the model is ready.
+ 
+ 
+ISSUES IN ITERATION 1
+1. JUnit 5 was not on the classpath after cloning the repo, so the project
+   failed to build ("package org.junit.jupiter.api does not exist"). Fixed by
+   changing the JUnit5 dependency scope from Test to Compile.
