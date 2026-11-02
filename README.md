@@ -42,7 +42,7 @@ first use and is git-ignored.
 TEAM MEMBERS
 Alex Douk, John Nguyen, Nathan Chiu, Liiban Isse
 
-Alex Douk
+## Alex Douk
 
 WORK COMPLETED
 - DAT-2 Set up SQLite Database (7 hours actual): MonsterStats class, SQLiteDatabase
@@ -73,9 +73,26 @@ ISSUES IN ITERATION 1
 - The code uses "package src.model;" because of the repo layout. This works,
   but we may rename the packages later.
 
-John Nguyen
+## John Nguyen
 
-Nathan Chiu
+WORK COMPLETED
+- DAT-1 Set up DungeonCharacter (8 hours actual): DungeonCharacter, the abstract parent of Hero and Monster, with private fields, a protected constructor that validates every value, takeDamage, a clamped setHitPoints, and attack(foe, rng), which takes the shared Random so tests can use a fixed seed (SRS 2.5). Serializable for save and load. Also Hero (chance to block, healing and vision potions, an abstract specialSkill, and names trimmed to 1 to 20 characters per FR-NEW-2) and Warrior, Priestess and Thief with the FR-HERO-1 statistics and the Crushing Blow, Heal and Surprise Attack skills. Full Javadoc on every class.
+- DAT-13 Create Monster subclasses (2 hours): Monster, which adds a chance to heal and tryHeal (returns the hit points restored and never heals a fainted monster, FR-COM-6), and Ogre, Gremlin and Skeleton, which take a name and a MonsterStats object so no statistics are hard-coded (FR-MON-2).
+- Total: 10 hours.
+
+NOTE ON LOGGED TIME
+DAT-1 was completed in the span of 3-4 days, but due to how YouTrack works, assigning multiple days on one task will result in an inaccurate time log. As a result, a time estimate of 8 hours were logged on a single day.
+
+ISSUES IN ITERATION 1
+
+- Hero is missing its list of pillars found (FR-HERO-6, FR-MOV-4) because the Pillar class is not written yet. A TODO is in the Hero Javadoc, and the list, addPillar, getPillars and the toString output will be added when Pillar exists.
+- The special skills and tryHeal are not called from anywhere yet. GameModel (iteration 2) has to apply blocking, the extra-attacks rule and the monster's chance to heal around these methods (FR-COM-2 to FR-COM-6).
+- The team has decided not to give individual names to monsters, so a monster's name is its type (Ogre, Gremlin, Skeleton) as stored in the database. Monster now has a constructor that takes a MonsterStats object, which resolves the mismatch with the UML noted in Alex's section.
+- The code uses "package src.model;" to match the repo layout, the same as MonsterStats.
+
+## Nathan Chiu
+
+WORK COMPLETED
 - DAT-3 Set up and implemented code to the Room class 
 - DAT-15 Set up and implemented code to the RoomItem class
 
@@ -90,19 +107,19 @@ ISSUES IN ITERATION 1
   room, nothing happens. 
 
 
-Liiban Isse
+## Liiban Isse
 
-Swing refresher (2h)
+- Swing refresher (2h)
   Reviewed Swing basics needed for the GUI: JFrame, JMenuBar, JMenu,
   JMenuItem, JOptionPane and action listeners. Built a practice window.
  
-Main game window (3h)
+- Main game window (3h)
   Created GameView (src.view), which extends JFrame: titled "Dungeon
   Adventure", 1100 x 750 (SRS 2.4), centered, and closes the program on exit.
   Includes setting up IntelliJ, the team GitHub repo and fixing the JUnit 5
   build error.
  
-File and Help menus (3h)
+- File and Help menus (3h)
   Added the menu bar (SRS 3.11, FR-MNU-1). File: New Game, Save Game,
   Load Game, Exit. Help: About, Game Play Instructions. About, Instructions
   and Exit work; New, Save and Load are placeholders until the model is ready.
