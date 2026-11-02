@@ -73,7 +73,7 @@ ISSUES IN ITERATION 1
 - The code uses "package src.model;" because of the repo layout. This works,
   but we may rename the packages later.
 
-john
+John Nguyen
 
 Nathan Chiu
 - DAT-3 Set up and implemented code to the Room class 
