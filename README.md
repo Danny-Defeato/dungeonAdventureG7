@@ -75,7 +75,10 @@ ISSUES IN ITERATION 1
 
 john
 nathan
+
+
 liiban
+
 Swing refresher (2h)
   Reviewed Swing basics needed for the GUI: JFrame, JMenuBar, JMenu,
   JMenuItem, JOptionPane and action listeners. Built a practice window.
