@@ -43,6 +43,7 @@ TEAM MEMBERS
 Alex Douk, John Nguyen, Nathan Chiu, Liiban Isse
 
 Alex Douk
+
 WORK COMPLETED
 - DAT-2 Set up SQLite Database (7 hours actual): MonsterStats class, SQLiteDatabase
   class (monster_stats table, seeded with Ogre/Gremlin/Skeleton from the SRS,
