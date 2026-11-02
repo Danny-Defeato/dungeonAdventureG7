@@ -74,7 +74,20 @@ ISSUES IN ITERATION 1
   but we may rename the packages later.
 
 john
-nathan
+
+Nathan Chiu
+- DAT-3 Set up and implemented code to the Room class 
+- DAT-15 Set up and implemented code to the RoomItem class
+
+NOTE ON LOGGED TIME
+The YouTrack time for DAT-3 is entered as "2d". The real time spent was
+9 hours. YouTrack counts one day as 8 hours, so it displays and reports as 16 hours.
+The correct figure for DAT-3 is 9 hours.
+
+ISSUES IN ITERATION 1
+- Pillar, Exit and Entrance are all "items" to be found in the room. Currently no code
+  has been implemented in these classes so when ran and those items are shown in the
+  room, nothing happens. 
 
 
 liiban
