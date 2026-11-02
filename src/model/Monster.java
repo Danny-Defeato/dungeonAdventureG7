@@ -53,6 +53,20 @@ public abstract class Monster extends DungeonCharacter {
     }
 
     /**
+     * Creates a monster using stats from MonsterStats.
+     *
+     * @param name the monster's name, not null or blank
+     * @param stats the statistics read from the database, not null
+     * @throws IllegalArgumentException if any value is out of range
+     */
+    protected Monster(final String name, final MonsterStats stats) {
+        this(name, stats.getHitPoints(), stats.getMinDamage(),
+                stats.getMaxDamage(), stats.getAttackSpeed(),
+                stats.getChanceToHit(), stats.getChanceToHeal(),
+                stats.getMinHeal(), stats.getMaxHeal());
+    }
+
+    /**
      * Tries to heal after the monster was hit. A monster that has fainted
      * cannot heal, and a heal never raises hit points above the maximum.
      * The game model should call this only when the monster was hit and
