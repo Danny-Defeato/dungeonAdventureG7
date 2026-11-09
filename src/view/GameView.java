@@ -10,6 +10,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import src.model.Warrior;
+import src.model.Direction;
+import src.model.Room;
 
 /**
  * The main window of Dungeon Adventure. It holds the menu bar, the dungeon
@@ -67,7 +69,15 @@ public class GameView extends JFrame {
         final HeroPanel heroPanel = new HeroPanel();
         final Warrior testHero = new Warrior("Gristle");   // TODO: use the real hero from the game model
         testHero.takeDamage(50);
-        heroPanel.showHero(testHero);        sideArea.add(heroPanel, BorderLayout.NORTH);
+        heroPanel.showHero(testHero);
+        sideArea.add(heroPanel, BorderLayout.NORTH);
+        // Room panel in the middle of the side area, showing a test room.
+        final Room testRoom = new Room(0, 0);   // TODO: use the hero's real room from the dungeon
+        testRoom.addDoor(Direction.EAST);
+        testRoom.addDoor(Direction.SOUTH);
+        final RoomPanel roomPanel = new RoomPanel();
+        roomPanel.showRoom(testRoom);
+        sideArea.add(roomPanel, BorderLayout.CENTER);
     }
 
     /**
