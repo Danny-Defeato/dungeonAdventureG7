@@ -1,5 +1,8 @@
 package src.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -8,12 +11,11 @@ import java.util.Random;
  * (Warrior, Priestess and Thief) supplies its own starting statistics and
  * its own special skill.
  *
- * <p>TODO (FR-HERO-6, FR-MOV-4): add the list of pillars found, with
- * addPillar and getPillars methods, once the Pillar class exists, and
- * include the pillars in {@link #toString()}.
+ * <p>A hero also keeps the list of Pillars of OO it has found (FR-HERO-6,
+ * FR-MOV-4), which is included in {@link #toString()}.
  *
  * @author Group 7 (John Nguyen)
- * @version 0.2
+ * @version 0.3
  */
 public abstract class Hero extends DungeonCharacter {
 
@@ -35,9 +37,12 @@ public abstract class Hero extends DungeonCharacter {
     /** The number of vision potions the hero carries. */
     private int visionPotions;
 
+    /** The Pillars of OO the hero has found, in the order found. */
+    private final List<Pillar> pillars;
+
     /**
-     * Creates a hero with no potions. Leading and trailing spaces are
-     * removed from the name.
+     * Creates a hero with no potions and no pillars. Leading and trailing
+     * spaces are removed from the name.
      *
      * @param name the hero's name, 1 to 20 characters after trimming
      * @param hitPoints the starting and maximum hit points, above 0
@@ -64,6 +69,7 @@ public abstract class Hero extends DungeonCharacter {
         this.chanceToBlock = chanceToBlock;
         this.healingPotions = 0;
         this.visionPotions = 0;
+        this.pillars = new ArrayList<>();
     }
 
     /**
@@ -170,7 +176,52 @@ public abstract class Hero extends DungeonCharacter {
     }
 
     /**
-     * Returns a one-line summary of the hero: name, hit points and potions.
+     * Adds a pillar to the hero's collection. A pillar the hero already has
+     * (same name) is not added a second time.
+     *
+     * @param pillar the pillar the hero found, not null
+     * @return true if the pillar was added, false if the hero already had it
+     * @throws IllegalArgumentException if the pillar is null
+     */
+    public boolean addPillar(final Pillar pillar) {
+        if (pillar == null) {
+            throw new IllegalArgumentException("pillar must not be null");
+        }
+        boolean added = true;
+        for (final Pillar found : pillars) {
+            if (found.getName().equals(pillar.getName())) {
+                added = false;
+                break;
+            }
+        }
+        if (added) {
+            pillars.add(pillar);
+        }
+        return added;
+    }
+
+    /**
+     * Returns the pillars the hero has found. The list cannot be changed;
+     * use {@link #addPillar(Pillar)} to add one.
+     *
+     * @return an unmodifiable list of the pillars found
+     */
+    public List<Pillar> getPillars() {
+        return Collections.unmodifiableList(pillars);
+    }
+
+    /**
+     * Tells whether the hero has found all four Pillars of OO.
+     *
+     * @return true if the hero holds every pillar
+     */
+    public boolean hasAllPillars() {
+        return pillars.size() == Pillar.TOTAL;
+    }
+
+    /**
+     * Returns a one-line summary of the hero: name, hit points, potions and
+     * the names of the pillars found.
      *
      * @return the summary text
      */
@@ -178,6 +229,27 @@ public abstract class Hero extends DungeonCharacter {
     public String toString() {
         return getName() + " | HP " + getHitPoints() + "/" + getMaxHitPoints()
                 + " | Healing potions: " + healingPotions
-                + " | Vision potions: " + visionPotions;
+                + " | Vision potions: " + visionPotions
+                + " | Pillars: " + pillarNames();
+    }
+
+    /**
+     * Builds the list of pillar names for {@link #toString()}.
+     *
+     * @return the pillar names separated by commas, or "none"
+     */
+    private String pillarNames() {
+        String result = "none";
+        if (!pillars.isEmpty()) {
+            final StringBuilder names = new StringBuilder();
+            for (final Pillar found : pillars) {
+                if (!names.isEmpty()) {
+                    names.append(", ");
+                }
+                names.append(found.getName());
+            }
+            result = names.toString();
+        }
+        return result;
     }
 }
