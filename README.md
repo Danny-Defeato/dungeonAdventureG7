@@ -182,7 +182,7 @@ ISSUES IN ITERATION 2
 - DAT-25 Set up and implemented code to the Potion subclasses (2 Hour)
     Added more classes to represent the different types of potions within the game,
     as well as exit, entrance, and pillar which are other items to be found in rooms
-- ISSUES: Some of these RoomItems have still yet to be used in the other classes for it to show in the game
+- ISSUES: Some of these RoomItems have still yet to be used in the other classes for it to show in the game.
 
 ## Liiban
 Split the window into areas (2h)
