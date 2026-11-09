@@ -176,5 +176,49 @@ ISSUES IN ITERATION 2
 ## John
 
 ## Nathan
+- DAT-16 Set up and implemented code to the Exit class (1 Hour)
+- DAT-17 Set up and implemented code to the Entrance class (1 Hour)
+- DAT-18 Set up and implemented code to the Pillar class (4 Hour)
+- DAT-25 Set up and implemented code to the Potion subclasses (2 Hour)
+    Added more classes to represent the different types of potions within the game,
+    as well as exit, entrance, and pillar which are other items to be found in rooms
+- ISSUES: Some of these RoomItems have still yet to be used in the other classes for it to show in the game.
 
 ## Liiban
+Split the window into areas (2h)
+  Used BorderLayout in GameView: the dungeon map area in the center (grows
+  with the window) and a 400-pixel side column on the right for the hero,
+  room and battle panels (SRS 3.13). Added Javadoc and named constants in
+  the team's style.
+ 
+Hero panel (2h)
+  Created HeroPanel (src.view), shown at the top of the side column. It shows
+  the hero's name and class, healing and vision potion counts, and the
+  pillars found (SRS FR-MOV-4). It reads a real Warrior from John's model
+  classes through getters (getName, getHealingPotions, getVisionPotions,
+  getPillars).
+ 
+HP bar (2h)
+  Replaced the hero's HP text with a JProgressBar that fills according to
+  getHitPoints() out of getMaxHitPoints() and shows "HP current / max".
+  Tested with takeDamage(50): the bar dropped to HP 75 / 125.
+ 
+Room panel - part 1 (3h)
+  Created RoomPanel (src.view), shown below the hero panel. North, South,
+  East and West buttons are arranged like a compass, and only directions with
+  a door are enabled (SRS FR-MOV-1), using Nathan's Room.hasDoor(). 
+ 
+ 
+ISSUES
+------
+1. Pushed work goes to liiban_branch, not main, so it did not appear on main
+   until a pull request was merged. I now open and merge a pull request after
+   each finished story.
+ 
+2. HeroPanel's call to getPillars() would not compile until I pulled and
+   merged main, because John's Hero update was not yet on my branch. I now
+   pull and merge main into my branch before starting work. Issue fixed.
+ 
+4. The room panel's buttons stretch to fill the side column because the panel
+   sits in BorderLayout's CENTER. This will be fixed when the potion buttons
+   and battle panel are added, to match the planned layout.
