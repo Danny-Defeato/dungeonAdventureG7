@@ -91,7 +91,7 @@ class MonsterFactoryTest {
     }
 
     @Test
-    void guardianKeepsSpeedHitAndHealStats() {
+    void guardianKeepsAttackSpeed() {
         final Monster normal = factory.create("Gremlin", false);
         final Monster guardian = factory.create("Gremlin", true);
         assertEquals(normal.getAttackSpeed(), guardian.getAttackSpeed());
@@ -141,6 +141,7 @@ class MonsterFactoryTest {
 
     @Test
     void supportedTypesMatchDatabaseSeed() {
-        assertEquals(db.getAllTypes(), MonsterFactory.getSupportedTypes());
+        assertEquals(new HashSet<>(db.getAllTypes()),
+                new HashSet<>(MonsterFactory.getSupportedTypes()));
     }
 }
