@@ -5,6 +5,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import src.model.Hero;
+import javax.swing.JProgressBar;
 
 /**
  * Shows the hero's name, hit points, potions and pillars (SRS FR-MOV-4).
@@ -17,8 +18,8 @@ public class HeroPanel extends JPanel {
     /** Shows the hero's name and class. */
     private final JLabel myNameLabel = new JLabel();
 
-    /** Shows the hero's hit points. */
-    private final JLabel myHitPointLabel = new JLabel();
+    /** Shows the hero's hit points as a bar. */
+    private final JProgressBar myHitPointBar = new JProgressBar();
 
     /** Shows the hero's potion counts. */
     private final JLabel myPotionLabel = new JLabel();
@@ -33,7 +34,8 @@ public class HeroPanel extends JPanel {
         super(new GridLayout(4, 1));
         setBorder(BorderFactory.createTitledBorder("Hero"));
         add(myNameLabel);
-        add(myHitPointLabel);
+        myHitPointBar.setStringPainted(true);
+        add(myHitPointBar);
         add(myPotionLabel);
         add(myPillarLabel);
     }
@@ -46,7 +48,9 @@ public class HeroPanel extends JPanel {
     public void showHero(final Hero theHero) {
         myNameLabel.setText(theHero.getName() + " the "
                 + theHero.getClass().getSimpleName());
-        myHitPointLabel.setText("HP: " + theHero.getHitPoints()
+        myHitPointBar.setMaximum(theHero.getMaxHitPoints());
+        myHitPointBar.setValue(theHero.getHitPoints());
+        myHitPointBar.setString("HP " + theHero.getHitPoints()
                 + " / " + theHero.getMaxHitPoints());
         myPotionLabel.setText("Healing potions: " + theHero.getHealingPotions()
                 + "   Vision potions: " + theHero.getVisionPotions());
