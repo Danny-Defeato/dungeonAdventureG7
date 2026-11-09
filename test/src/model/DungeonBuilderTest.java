@@ -267,8 +267,8 @@ class DungeonBuilderTest {
     @Test
     void heroCanWalkToTheExit() {
         final Dungeon d = build(8, 5, 5);
-        // Breadth-first search for the exit using only moveHero is overkill;
-        // walk a random route until the exit appears (bounded).
+        // Every room is connected, so a bounded random walk through doors
+        // eventually reaches the exit.
         final Random walk = new Random(1);
         for (int i = 0; i < 100000 && !d.getHeroRoom().hasExit(); i++) {
             d.moveHero(Direction.values()[walk.nextInt(4)]);
