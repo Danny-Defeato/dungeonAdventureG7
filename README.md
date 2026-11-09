@@ -131,3 +131,50 @@ ISSUES IN ITERATION 1
 1. JUnit 5 was not on the classpath after cloning the repo, so the project
    failed to build ("package org.junit.jupiter.api does not exist"). Fixed by
    changing the JUnit5 dependency scope from Test to Compile.
+
+
+# Group 7 Iteration 2 (Nov 2 - Nov 8, 2026)
+
+## Alex Douk
+
+WORK COMPLETED
+- DAT-20 Create MonsterFactory (4 hours): MonsterFactory builds Ogre, Gremlin and
+  Skeleton objects from the stats stored in the SQLite database (SRS FR-MON-3).
+  `create(type, guardian)` returns a new, separate monster each call and rejects
+  blank, null and unsupported types. `createRandom(rng, guardian)` picks a type
+  with the shared Random so a fixed seed gives repeatable results. Guardian
+  monsters get +25% hit points and damage; attack speed, chance to hit and the
+  heal stats are unchanged. JUnit tests in MonsterFactoryTest.
+- DAT-<ticket> Create Dungeon and DungeonBuilder (<hours> hours): Dungeon is a
+  grid of Rooms with an entrance, an exit and the hero's position. It has
+  moveHero, an isTraversable check (breadth-first search from the entrance to
+  the exit and all four pillars), a toString map built from the Room pictures
+  (FR-GEN-7), and Serializable support for save and load. DungeonBuilder
+  (Builder pattern) carves a random maze with a depth-first search, opens a few
+  extra doors for loops, places the entrance, exit and four pillars in separate
+  rooms, puts guardian monsters in the pillar and exit rooms, gives other rooms
+  a 15% chance of a monster, and regenerates until the dungeon is traversable.
+  A seeded Random gives the same dungeon every time. JUnit tests in
+  DungeonBuilderTest.
+- Total: <hours> hours.
+
+ISSUES IN ITERATION 2
+- Healing potions, vision potions and pits (FR-GEN-4) are not placed yet. They
+  will be added to DungeonBuilder as a follow-up ticket now that the potion and
+  pit item classes are being written.
+- FR-GEN-1 asks for at least a 4 x 4 dungeon, but DungeonBuilder.setSize allows
+  any size with 6 or more rooms (the entrance, exit and four pillars). The
+  default is 5 x 5. The team needs to decide whether to enforce 4 x 4.
+- The dungeon is always connected, so it always has dead ends, but the random
+  extra doors could in theory remove them all. DungeonBuilder does not check
+  for a dead end before returning a dungeon yet.
+- The MonsterFactory ticket was planned as DAT-13 in the Iteration 1 notes, but
+  it was created as DAT-20 in YouTrack (DAT-13 became the Monster subclasses).
+- The guardian rule (+25% hit points and damage) is our own choice, because the
+  SRS says the exact rule is still to be decided (FR-GEN-5).
+
+## John
+
+## Nathan
+
+## Liiban
