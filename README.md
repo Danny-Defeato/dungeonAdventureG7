@@ -175,6 +175,31 @@ ISSUES IN ITERATION 2
 
 ## John
 
+WORK COMPLETED
+- DAT-22 Make JUnit tests for the DungeonCharacter classes (5 hours): CharacterTest, which tests 
+Hero, Warrior, Priestess, Thief, Monster and Ogre. It covers name checks, hit points and damage, 
+potions, the pillars list, the three special skills (Crushing Blow, Heal, Surprise Attack) and 
+monster healing. A fixed-seed Random and a test monster that always hits and heals for exactly 
+10 keep the results the same on every run (SRS 2.5).
+- DAT-19 Implement Hero and Pillar integration (3 hours): Hero now keeps the Pillars of 
+OO it has found, with addPillar (ignores duplicates), getPillars (read-only), hasAllPillars, and the 
+pillars in toString (FR-HERO-6, FR-MOV-4).
+- DAT-26 Implement Battle class and logic for Hero and Monster (3 hours): Battle plays a 
+fight one round at a time with playRound(action), where the action is Attack, Special Skill 
+or Healing Potion (FR-COM-2). The hero makes (hero speed ÷ monster speed) attacks per round, rounded down, 
+with a minimum of 1, and a skill or potion replaces the normal attacks (FR-COM-3). The monster then 
+attacks once. A fainted monster never attacks, and isOver and getWinner report the result (FR-COM-1). 
+- Total: 11 hours.
+
+ISSUES IN ITERATION 2
+- Blocking (FR-COM-5), monster healing (FR-COM-6) and the full battle log (FR-COM-7) are not added to Battle yet.
+  A TODO is in the Battle Javadoc, and they are planned for the next iteration.
+- Battle is not connected to the GUI or to a game model yet. The battle panel and GameModel still need to call playRound.
+- The SRS says the monster attacks once per round and that the exact rule is still to be decided (FR-COM-3, ISS-7).
+  Battle follows the current wording, but it is subject to change after some group discussion later. Choosing a
+  healing potion when the hero has none logs a message and does not use up the round, which is our own choice because the SRS does not say.
+- A separate Battle class is our own design choice, because the SRS does not name one. It is not in the UML yet, so we will likely update that for next time.
+
 ## Nathan
 - DAT-16 Set up and implemented code to the Exit class (1 Hour)
 - DAT-17 Set up and implemented code to the Entrance class (1 Hour)
