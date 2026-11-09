@@ -65,8 +65,9 @@ public class GameView extends JFrame {
         // Hero panel at the top of the side area, showing a test Warrior.
         sideArea.setLayout(new BorderLayout());
         final HeroPanel heroPanel = new HeroPanel();
-        heroPanel.showHero(new Warrior("Gristle"));   // TODO: use the real hero from the game model
-        sideArea.add(heroPanel, BorderLayout.NORTH);
+        final Warrior testHero = new Warrior("Gristle");   // TODO: use the real hero from the game model
+        testHero.takeDamage(50);
+        heroPanel.showHero(testHero);        sideArea.add(heroPanel, BorderLayout.NORTH);
     }
 
     /**
