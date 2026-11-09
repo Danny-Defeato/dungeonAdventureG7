@@ -29,7 +29,7 @@ public class Pillar extends RoomItem {
 
     @Override
     public String applyTo(final Hero theHero, final Random theRng) {
-        //theHero.addPillar(this);                                        /** waiting for hero to implement addPillar*/
+        theHero.addPillar(this);
         return "You found the Pillar of " + myName + "!";
     }
 }
