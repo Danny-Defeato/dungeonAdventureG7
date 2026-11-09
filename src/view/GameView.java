@@ -9,6 +9,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import src.model.Warrior;
 
 /**
  * The main window of Dungeon Adventure. It holds the menu bar, the dungeon
@@ -61,6 +62,11 @@ public class GameView extends JFrame {
         sideArea.setBorder(BorderFactory.createTitledBorder("Hero / Room / Battle"));
         sideArea.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
         add(sideArea, BorderLayout.EAST);
+        // Hero panel at the top of the side area, showing a test Warrior.
+        sideArea.setLayout(new BorderLayout());
+        final HeroPanel heroPanel = new HeroPanel();
+        heroPanel.showHero(new Warrior("Gristle"));   // TODO: use the real hero from the game model
+        sideArea.add(heroPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -100,9 +106,15 @@ public class GameView extends JFrame {
         return bar;
     }
 
+    /**
+     * Opens the game window. For testing only; this will move to the
+     * DungeonAdventure class later.
+     *
 
+     */
     public static void main(final String[] args) {
         final GameView window = new GameView();
         window.setVisible(true);
+
     }
 }
