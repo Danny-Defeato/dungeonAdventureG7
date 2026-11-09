@@ -1,17 +1,19 @@
 package src.view;
 
 import java.awt.GridLayout;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import src.model.Hero;
 import javax.swing.JProgressBar;
+import src.model.Hero;
+import src.model.Pillar;
 
 /**
  * Shows the hero's name, hit points, potions and pillars (SRS FR-MOV-4).
  *
  * @author Group 7 (Liiban Isse)
- * @version 0.1
+ * @version 0.3
  */
 public class HeroPanel extends JPanel {
 
@@ -54,8 +56,26 @@ public class HeroPanel extends JPanel {
                 + " / " + theHero.getMaxHitPoints());
         myPotionLabel.setText("Healing potions: " + theHero.getHealingPotions()
                 + "   Vision potions: " + theHero.getVisionPotions());
-        myPillarLabel.setText("Pillars: none yet");   // TODO: use getPillars() once john adds it to Hero class
-
+        myPillarLabel.setText("Pillars: " + pillarText(theHero.getPillars()));
     }
 
+    /**
+     * Builds the text for the pillars the hero has found.
+     *
+     * @param thePillars the pillars found
+     * @return the pillar names separated by commas, or "none yet"
+     */
+    private String pillarText(final List<Pillar> thePillars) {
+        if (thePillars.isEmpty()) {
+            return "none yet";
+        }
+        final StringBuilder names = new StringBuilder();
+        for (final Pillar pillar : thePillars) {
+            if (names.length() > 0) {
+                names.append(", ");
+            }
+            names.append(pillar.getName());
+        }
+        return names.toString();
+    }
 }
