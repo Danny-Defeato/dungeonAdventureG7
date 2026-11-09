@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.io.Serial;
 
 /** One room of the dungeon: doors, items, an optional monster and what the player
  * knows about it.
@@ -12,6 +13,8 @@ import java.util.Set;
  * @author Nathan Chiu
  */
 public class Room implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final int myRow;

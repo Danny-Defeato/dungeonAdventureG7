@@ -176,6 +176,10 @@ ISSUES IN ITERATION 2
 ## John
 
 ## Nathan
+- DAT-16 Set up and implemented code to the Exit class (1 Hour)
+- DAT-17 Set up and implemented code to the Entrance class (1 Hour)
+- DAT-18 Set up and implemented code to the Pillar class (4 Hour)
+- DAT-25 Set up and implemented code to the Potion subclasses (2 Hour)
 
 ## Liiban
 Split the window into areas (2h)
