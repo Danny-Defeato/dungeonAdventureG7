@@ -2,9 +2,15 @@ package src.model;
 
 import java.util.List;
 import java.util.Random;
+import java.io.Serial;
 
-/** One of the four Pillars of OO. The symbol is the first letter of the name (A, E, I, P). */
+/** One of the four Pillars of OO. The symbol is the first letter of the name (A, E, I, P).
+ *
+ *
+ * @author Nathan Chiu
+ */
 public class Pillar extends RoomItem {
+    @Serial
     private static final long serialVersionUID = 1L;
     /** The four pillar names, in order. */
     public static final List<String> NAMES =

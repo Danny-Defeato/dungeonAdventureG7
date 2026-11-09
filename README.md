@@ -176,6 +176,13 @@ ISSUES IN ITERATION 2
 ## John
 
 ## Nathan
+- DAT-16 Set up and implemented code to the Exit class (1 Hour)
+- DAT-17 Set up and implemented code to the Entrance class (1 Hour)
+- DAT-18 Set up and implemented code to the Pillar class (4 Hour)
+- DAT-25 Set up and implemented code to the Potion subclasses (2 Hour)
+    Added more classes to represent the different types of potions within the game,
+    as well as exit, entrance, and pillar which are other items to be found in rooms
+- ISSUES: Some of these RoomItems have still yet to be used in the other classes for it to show in the game.
 
 ## Liiban
 Split the window into areas (2h)
