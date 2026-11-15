@@ -240,3 +240,36 @@ ISSUES
 4. The room panel's buttons stretch to fill the side column because the panel
    sits in BorderLayout's CENTER. This will be fixed when the potion buttons
    and battle panel are added, to match the planned layout.
+
+
+# Group 7 Iteration 3 (Nov 9 - Nov 15, 2026)
+
+## Alex Douk
+
+WORK COMPLETED
+- Create HeroFactory: builds a Warrior, Priestess or Thief from a class and a
+  name (FR-NEW-4).
+- Place potions and pits: added Pit (1 to 20 damage, FR-ROOM-3). Ordinary rooms
+  get a 10% chance each of a healing potion, vision potion and pit (FR-GEN-4).
+  Entrance, exit and pillar rooms hold only their own item, so a pillar's
+  letter always shows on the map.
+- Vision reveal and dead-end check: vision reveals the hero's room and up to
+  eight neighbors (FR-POT-2). The builder regenerates mazes with no dead end,
+  and the minimum size is 4 x 4 (FR-GEN-1).
+- JUnit tests for all of the above (96 tests passing).
+
+ISSUES IN ITERATION 3
+- Nothing calls the vision reveal or Pit damage yet. GameModel (not written yet)
+  has to use them and end the game if a pit brings the hero to 0 hit points.
+- My classes do not follow the my/the naming
+  IllegalArgumentException for null arguments yet. I will fix them after
+  the naming ticket (DAT-31) is merged, so the renames do not conflict.
+- The SRS leaves the guardian monster rule T+25%
+  hit points and damage, so the SRS should be updated to match.
+
+
+## John Nguyen
+
+## Nathan Chiu
+
+## Liiban Isse
