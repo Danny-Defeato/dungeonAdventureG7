@@ -159,15 +159,8 @@ WORK COMPLETED
 - Total: <hours> hours.
 
 ISSUES IN ITERATION 2
-- Healing potions, vision potions and pits (FR-GEN-4) are not placed yet. They
-  will be added to DungeonBuilder as a follow-up ticket now that the potion and
-  pit item classes are being written.
-- FR-GEN-1 asks for at least a 4 x 4 dungeon, but DungeonBuilder.setSize allows
-  any size with 6 or more rooms (the entrance, exit and four pillars). The
-  default is 5 x 5. The team needs to decide whether to enforce 4 x 4.
-- The dungeon is always connected, so it always has dead ends, but the random
-  extra doors could in theory remove them all. DungeonBuilder does not check
-  for a dead end before returning a dungeon yet.
+- The vision potion reveal is in Dungeon, but nothing uses it yet. GameModel
+  (not written yet) has to call it when the hero uses a vision potion.
 - The MonsterFactory ticket was planned as DAT-13 in the Iteration 1 notes, but
   it was created as DAT-20 in YouTrack (DAT-13 became the Monster subclasses).
 - The guardian rule (+25% hit points and damage) is our own choice, because the
