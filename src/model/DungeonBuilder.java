@@ -16,11 +16,15 @@ import java.util.Random;
  * there are some loops. The entrance, exit and four pillars go in six
  * different rooms. The entrance room holds nothing else. Every pillar room
  * and the exit room get a guardian monster; other rooms get an ordinary
- * monster with probability {@link #MONSTER_CHANCE}. All randomness comes from
- * the injected {@link Random}, so a fixed seed gives the same dungeon.
+ * monster with probability {@link #MONSTER_CHANCE}.
  *
- * <p>Not placed yet: healing potions, vision potions and pits (SRS 3.4),
- * because those item classes do not exist yet.
+ * <p>Every room other than the entrance, exit and pillar rooms independently
+ * has a {@link #ITEM_CHANCE} chance of a healing potion, of a vision potion and
+ * of a pit (FR-GEN-4), so one room can hold several. Pillar rooms hold only
+ * their pillar, so the pillar's letter always shows on the map.
+ *
+ * <p>All randomness comes from the injected {@link Random}, so a fixed seed
+ * gives the same dungeon.
  *
  * @author Group 7 (Alex Douk)
  * @version 0.1
@@ -32,6 +36,9 @@ public class DungeonBuilder {
 
     /** Chance that an ordinary room holds a monster. */
     public static final double MONSTER_CHANCE = 0.15;
+
+    /** Chance that an ordinary room holds each of a healing potion, a vision potion and a pit. */
+    public static final double ITEM_CHANCE = 0.10;
 
     /** Chance that a wall between two rooms is opened after carving. */
     public static final double EXTRA_DOOR_CHANCE = 0.08;
@@ -119,12 +126,28 @@ public class DungeonBuilder {
             room.addItem(new Pillar(Pillar.NAMES.get(i)));
             room.setMonster(monsterFactory.createRandom(rng, true));
         }
-        for (int i = 2 + Pillar.TOTAL; i < all.size(); i++) {
+        for (int i = MIN_ROOMS; i < all.size(); i++) {
+            placeItems(all.get(i));
+        }
+        for (int i = MIN_ROOMS; i < all.size(); i++) {
             if (rng.nextDouble() < MONSTER_CHANCE) {
                 all.get(i).setMonster(monsterFactory.createRandom(rng, false));
             }
         }
         return new Dungeon(grid, entrance, exit);
+    }
+
+    /** Each of a healing potion, a vision potion and a pit is placed independently. */
+    private void placeItems(final Room room) {
+        if (rng.nextDouble() < ITEM_CHANCE) {
+            room.addItem(new HealthPotion());
+        }
+        if (rng.nextDouble() < ITEM_CHANCE) {
+            room.addItem(new VisionPotion());
+        }
+        if (rng.nextDouble() < ITEM_CHANCE) {
+            room.addItem(new Pit());
+        }
     }
 
     /** Randomized depth-first search: opens a door between neighbors. */
