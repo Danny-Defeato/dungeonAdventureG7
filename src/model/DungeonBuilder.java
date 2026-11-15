@@ -34,6 +34,9 @@ public class DungeonBuilder {
     /** Default number of rows and columns. */
     public static final int DEFAULT_SIZE = 5;
 
+    /** Fewest rows and fewest columns a dungeon can have (FR-GEN-1). */
+    public static final int MIN_SIZE = 4;
+
     /** Chance that an ordinary room holds a monster. */
     public static final double MONSTER_CHANCE = 0.15;
 
@@ -68,16 +71,15 @@ public class DungeonBuilder {
     /**
      * Sets the size of the dungeon.
      *
-     * @param rows the number of rows, at least 1
-     * @param cols the number of columns, at least 1; rows times columns must be
-     *        at least 6 so the entrance, exit and pillars each get a room
+     * @param rows the number of rows, at least {@link #MIN_SIZE}
+     * @param cols the number of columns, at least {@link #MIN_SIZE}
      * @return this builder
      * @throws IllegalArgumentException if the size is too small
      */
     public DungeonBuilder setSize(final int rows, final int cols) {
-        if (rows < 1 || cols < 1 || rows * cols < MIN_ROOMS) {
+        if (rows < MIN_SIZE || cols < MIN_SIZE) {
             throw new IllegalArgumentException(
-                    "dungeon needs at least " + MIN_ROOMS + " rooms");
+                    "dungeon must be at least " + MIN_SIZE + " x " + MIN_SIZE);
         }
         this.rows = rows;
         this.cols = cols;
@@ -85,8 +87,8 @@ public class DungeonBuilder {
     }
 
     /**
-     * Builds a new dungeon. If a generated maze cannot be completed, a new one
-     * is generated.
+     * Builds a new dungeon. If a generated maze cannot be completed or has no
+     * dead end (FR-GEN-1, FR-GEN-2), a new one is generated.
      *
      * @return the dungeon, with the hero at the entrance
      * @throws IllegalStateException if no usable dungeon could be built
@@ -94,7 +96,7 @@ public class DungeonBuilder {
     public Dungeon build() {
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             final Dungeon dungeon = tryBuild();
-            if (dungeon.isTraversable()) {
+            if (dungeon.isTraversable() && dungeon.hasDeadEnd()) {
                 return dungeon;
             }
         }

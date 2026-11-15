@@ -21,6 +21,9 @@ public class Dungeon implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /** How many rooms away a vision potion reveals (1 gives a 3 x 3 area). */
+    private static final int VISION_RADIUS = 1;
+
     /** The rooms, indexed [row][column]. */
     private final Room[][] rooms;
 
@@ -140,6 +143,44 @@ public class Dungeon implements Serializable {
             result.setVisited(true);
         }
         return result;
+    }
+
+    /**
+     * Reveals the hero's room and the rooms around it, as a vision potion does
+     * (FR-POT-2). Up to eight neighbors are revealed, fewer when the hero is at
+     * the edge of the dungeon.
+     *
+     * @return the number of rooms revealed, including the hero's own room
+     */
+    public int revealAroundHero() {
+        int revealed = 0;
+        for (int dr = -VISION_RADIUS; dr <= VISION_RADIUS; dr++) {
+            for (int dc = -VISION_RADIUS; dc <= VISION_RADIUS; dc++) {
+                final int r = heroRow + dr;
+                final int c = heroCol + dc;
+                if (inBounds(r, c)) {
+                    rooms[r][c].setRevealed(true);
+                    revealed++;
+                }
+            }
+        }
+        return revealed;
+    }
+
+    /**
+     * Tells whether any room is a dead end, meaning it has exactly one door.
+     *
+     * @return true if at least one room has a single door
+     */
+    public boolean hasDeadEnd() {
+        for (final Room[] row : rooms) {
+            for (final Room room : row) {
+                if (room.getDoorCount() == 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
