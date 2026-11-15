@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -101,7 +102,10 @@ class DungeonBuilderTest {
             for (int r = 0; r < 5; r++) {
                 for (int c = 0; c < 5; c++) {
                     final Room room = d.getRoom(r, c);
-                    assertTrue(room.getItems().size() <= 1, "no room holds two items");
+                    if (room.hasEntrance() || room.hasExit() || room.hasPillar()) {
+                        assertEquals(1, room.getItems().size(),
+                                "entrance, exit and pillar rooms hold only their own item");
+                    }
                     for (final RoomItem item : room.getItems()) {
                         if (item instanceof Pillar) {
                             names.add(((Pillar) item).getName());
@@ -111,6 +115,50 @@ class DungeonBuilderTest {
             }
             assertEquals(new HashSet<>(Pillar.NAMES), names);
         }
+    }
+
+    @Test
+    void potionsAndPitsAppearAboutTenPercentOfOrdinaryRooms() {
+        int ordinary = 0;
+        int healing = 0;
+        int vision = 0;
+        int pits = 0;
+        for (long seed = 0; seed < 200; seed++) {
+            final Dungeon d = build(seed, 6, 6);
+            for (int r = 0; r < 6; r++) {
+                for (int c = 0; c < 6; c++) {
+                    final Room room = d.getRoom(r, c);
+                    if (room.hasEntrance() || room.hasExit() || room.hasPillar()) {
+                        continue;
+                    }
+                    ordinary++;
+                    for (final RoomItem item : room.getItems()) {
+                        if (item instanceof HealthPotion) {
+                            healing++;
+                        } else if (item instanceof VisionPotion) {
+                            vision++;
+                        } else if (item instanceof Pit) {
+                            pits++;
+                        } else {
+                            fail("unexpected item " + item);
+                        }
+                    }
+                }
+            }
+        }
+        for (final int found : new int[] {healing, vision, pits}) {
+            final double share = (double) found / ordinary;
+            assertTrue(share > 0.07 && share < 0.13, "share was " + share);
+        }
+    }
+
+    @Test
+    void ordinaryRoomCanHoldSeveralItemsAndShowsM() {
+        boolean sawM = false;
+        for (long seed = 0; seed < 200 && !sawM; seed++) {
+            sawM = build(seed, 6, 6).toString().indexOf('M') >= 0;
+        }
+        assertTrue(sawM);
     }
 
     @Test
