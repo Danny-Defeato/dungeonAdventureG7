@@ -207,16 +207,73 @@ class DungeonBuilderTest {
 
     @Test
     void hasDeadEnds() {
-        for (long seed = 0; seed < 30; seed++) {
-            final Dungeon d = build(seed, 6, 6);
-            boolean dead = false;
-            for (int r = 0; r < 6; r++) {
-                for (int c = 0; c < 6; c++) {
-                    dead |= d.getRoom(r, c).getDoorCount() == 1;
-                }
-            }
-            assertTrue(dead, "seed " + seed);
+        for (long seed = 0; seed < 100; seed++) {
+            assertTrue(build(seed, 6, 6).hasDeadEnd(), "6x6 seed " + seed);
+            assertTrue(build(seed, 4, 4).hasDeadEnd(), "4x4 seed " + seed);
         }
+    }
+
+    @Test
+    void hasDeadEndIsFalseWhenEveryRoomHasTwoDoors() {
+        final Room[][] grid = new Room[2][2];
+        for (int r = 0; r < 2; r++) {
+            for (int c = 0; c < 2; c++) {
+                grid[r][c] = new Room(r, c);
+            }
+        }
+        // A ring of four rooms: every room has exactly two doors.
+        grid[0][0].addDoor(Direction.EAST);
+        grid[0][1].addDoor(Direction.WEST);
+        grid[0][1].addDoor(Direction.SOUTH);
+        grid[1][1].addDoor(Direction.NORTH);
+        grid[1][1].addDoor(Direction.WEST);
+        grid[1][0].addDoor(Direction.EAST);
+        grid[1][0].addDoor(Direction.NORTH);
+        grid[0][0].addDoor(Direction.SOUTH);
+        final Dungeon ring = new Dungeon(grid, grid[0][0], grid[1][1]);
+        assertFalse(ring.hasDeadEnd());
+    }
+
+    /** A 5 x 5 grid of separate rooms with the entrance, and so the hero, at a position. */
+    private static Dungeon gridWithEntranceAt(final int row, final int col) {
+        final Room[][] grid = new Room[5][5];
+        for (int r = 0; r < 5; r++) {
+            for (int c = 0; c < 5; c++) {
+                grid[r][c] = new Room(r, c);
+            }
+        }
+        final Room entrance = grid[row][col];
+        final Room exit = grid[row == 0 ? 4 : 0][col == 0 ? 4 : 0];
+        return new Dungeon(grid, entrance, exit);
+    }
+
+    @Test
+    void visionRevealsNineRoomsInTheMiddle() {
+        final Dungeon d = gridWithEntranceAt(2, 2);
+        assertEquals(9, d.revealAroundHero());
+        for (int r = 0; r < 5; r++) {
+            for (int c = 0; c < 5; c++) {
+                final boolean near = Math.abs(r - 2) <= 1 && Math.abs(c - 2) <= 1;
+                assertEquals(near, d.getRoom(r, c).isRevealed(), r + "," + c);
+            }
+        }
+    }
+
+    @Test
+    void visionRevealsFewerRoomsAtEdgesAndCorners() {
+        assertEquals(6, gridWithEntranceAt(0, 2).revealAroundHero());
+        assertEquals(6, gridWithEntranceAt(2, 4).revealAroundHero());
+        assertEquals(4, gridWithEntranceAt(0, 0).revealAroundHero());
+        assertEquals(4, gridWithEntranceAt(4, 4).revealAroundHero());
+    }
+
+    @Test
+    void visionFollowsTheHero() {
+        final Dungeon d = build(5, 5, 5);
+        final Direction dir = d.getHeroRoom().getDoors().iterator().next();
+        d.moveHero(dir);
+        d.revealAroundHero();
+        assertTrue(d.getHeroRoom().isRevealed());
     }
 
     @Test
@@ -254,16 +311,21 @@ class DungeonBuilderTest {
     }
 
     @Test
-    void worksOnSmallestSizes() {
-        assertTrue(build(1, 2, 3).isTraversable());
-        assertTrue(build(1, 1, 6).isTraversable());
-        assertTrue(build(1, 6, 1).isTraversable());
+    void worksOnSmallestSize() {
+        for (long seed = 0; seed < 100; seed++) {
+            assertTrue(build(seed, 4, 4).isTraversable(), "seed " + seed);
+        }
+        assertTrue(build(1, 4, 9).isTraversable());
+        assertTrue(build(1, 9, 4).isTraversable());
     }
 
     @Test
-    void tooSmallSizeRejected() {
+    void sizeBelowFourByFourRejected() {
         final DungeonBuilder b = new DungeonBuilder(factory, new Random(1));
-        assertThrows(IllegalArgumentException.class, () -> b.setSize(2, 2));
+        assertThrows(IllegalArgumentException.class, () -> b.setSize(3, 3));
+        assertThrows(IllegalArgumentException.class, () -> b.setSize(3, 10));
+        assertThrows(IllegalArgumentException.class, () -> b.setSize(10, 3));
+        assertThrows(IllegalArgumentException.class, () -> b.setSize(1, 6));
         assertThrows(IllegalArgumentException.class, () -> b.setSize(0, 10));
         assertThrows(IllegalArgumentException.class, () -> b.setSize(-1, 10));
     }
