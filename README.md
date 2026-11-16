@@ -270,6 +270,33 @@ ISSUES IN ITERATION 3
 
 ## John Nguyen
 
+WORK COMPLETED
+- DAT-31 Apply my/the naming and add argument checks (2 hours): renamed instance
+  fields to my* and parameters to the* in DungeonCharacter, Hero, Monster, Warrior, Priestess,
+  Thief, Ogre, Gremlin, Skeleton and Battle. Methods that take a Random, a foe, a target or an amount
+  now throw an IllegalArgumentException for null or invalid input, and the chance and attack speed limits
+  are constants in DungeonCharacter (MIN_CHANCE, MAX_CHANCE, MIN_ATTACK_SPEED). CharacterTest will need to be updated.
+- DAT-29 Finish Battle (5 hours): the hero now rolls to block each monster attack and a blocked
+  attack deals no damage (FR-COM-5). A monster that loses hit points and survives has a chance to heal (FR-COM-6).
+  Battle keeps a log of every attack, miss, block, heal and the result, which getLog() returns (FR-COM-7).
+- DAT-30 Updating SRS and UML (2 hours): Still a work in progress. Waiting on other teammates to update the naming conventions
+  of their code to make changes to the UML. SRS needs a lot more polish to it. Mainly making the requirements more clear and updating
+  the issues list at the bottom.
+- Total: 9 hours.
+
+ISSUES IN ITERATION 3
+- Battle does not have JUnit tests in the repo yet. They will be added in the next iteration.
+- Battle is not connected to the game yet. The GameModel class (not written yet) has to create a Battle when
+  the hero enters a room with a monster, call playRound, and end the game or remove the monster when the battle is over (FR-ROOM-1, FR-COM-8).
+- The SRS says the monster attacks once per round, but the exact rule is still open (FR-COM-3, ISS-7). Battle follows the current wording,
+  but we need further discussion amongst ourselves about it.
+- Only healing potions can be used during a battle, because vision potions are not allowed in battle (FR-POT-3). If a player chooses a
+  healing potion with none left, nothing happens and the round is not used. The SRS does not say what should specifically happen, so
+  this is our own choice. (We might add in more potion types if we have time)
+- The monster heals after each hero attack that hurts it and leaves it standing. The SRS does not say whether this happens after each
+  attack or once per round, so this is also our own choice.
+
+
 ## Nathan Chiu 
 - Played through the game now, not all features are accessible yet. Instead, tested each button, prompts and visuals
   to get an idea of what could be changed for a better user experience and better visual. (3h)
