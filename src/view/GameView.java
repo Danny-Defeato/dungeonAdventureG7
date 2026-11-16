@@ -9,16 +9,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import src.model.Warrior;
-import src.model.Direction;
-import src.model.Room;
 
 /**
  * The main window of Dungeon Adventure. It holds the menu bar, the dungeon
  * map on the left and the hero, room and battle panels on the right.
  *
  * @author Group 7 (Liiban Isse)
- * @version 0.2
+ * @version 0.4
  */
 public class GameView extends JFrame {
 
@@ -42,9 +39,16 @@ public class GameView extends JFrame {
                     + "Move with the direction buttons. Avoid pits, collect potions, "
                     + "and defeat monsters.";
 
+    /** Shows the hero's information. */
+    private final HeroPanel myHeroPanel = new HeroPanel();
+
+    /** Shows the current room and the direction buttons. */
+    private final RoomPanel myRoomPanel = new RoomPanel();
+
     /**
      * Creates the main window with its menu bar and its two areas: the map
-     * in the center and the side panels on the right.
+     * in the center and the side panels on the right. The panels start empty;
+     * the controller fills them with game data.
      */
     public GameView() {
         super("Dungeon Adventure");
@@ -60,24 +64,30 @@ public class GameView extends JFrame {
         add(mapArea, BorderLayout.CENTER);
 
         // Side area: a fixed-width column on the right for the other panels.
-        final JPanel sideArea = new JPanel();
+        final JPanel sideArea = new JPanel(new BorderLayout());
         sideArea.setBorder(BorderFactory.createTitledBorder("Hero / Room / Battle"));
         sideArea.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
+        sideArea.add(myHeroPanel, BorderLayout.NORTH);
+        sideArea.add(myRoomPanel, BorderLayout.CENTER);
         add(sideArea, BorderLayout.EAST);
-        // Hero panel at the top of the side area, showing a test Warrior.
-        sideArea.setLayout(new BorderLayout());
-        final HeroPanel heroPanel = new HeroPanel();
-        final Warrior testHero = new Warrior("Gristle");   // TODO: use the real hero from the game model
-        testHero.takeDamage(50);
-        heroPanel.showHero(testHero);
-        sideArea.add(heroPanel, BorderLayout.NORTH);
-        // Room panel in the middle of the side area, showing a test room.
-        final Room testRoom = new Room(0, 0);   // TODO: use the hero's real room from the dungeon
-        testRoom.addDoor(Direction.EAST);
-        testRoom.addDoor(Direction.SOUTH);
-        final RoomPanel roomPanel = new RoomPanel();
-        roomPanel.showRoom(testRoom);
-        sideArea.add(roomPanel, BorderLayout.CENTER);
+    }
+
+    /**
+     * Returns the hero panel so the controller can update it.
+     *
+     * @return the hero panel
+     */
+    public HeroPanel getHeroPanel() {
+        return myHeroPanel;
+    }
+
+    /**
+     * Returns the room panel so the controller can update it.
+     *
+     * @return the room panel
+     */
+    public RoomPanel getRoomPanel() {
+        return myRoomPanel;
     }
 
     /**
@@ -115,17 +125,5 @@ public class GameView extends JFrame {
         bar.add(fileMenu);
         bar.add(helpMenu);
         return bar;
-    }
-
-    /**
-     * Opens the game window. For testing only; this will move to the
-     * DungeonAdventure class later.
-     *
-
-     */
-    public static void main(final String[] args) {
-        final GameView window = new GameView();
-        window.setVisible(true);
-
     }
 }
