@@ -7,18 +7,18 @@ package src.model;
  * class.
  *
  * @author Group 7 (John Nguyen)
- * @version 0.1
+ * @version 0.2
  */
 public class Skeleton extends Monster {
 
     /**
      * Creates a Skeleton from statistics read from the database.
      *
-     * @param name the Skeleton's name as stored in the database, not null or blank
-     * @param stats the Skeleton's statistics, not null
+     * @param theName the Skeleton's name as stored in the database, not null or blank
+     * @param theStats the Skeleton's statistics, not null
      * @throws IllegalArgumentException if any value is out of range
      */
-    public Skeleton(final String name, final MonsterStats stats) {
-        super(name, stats);
+    public Skeleton(final String theName, final MonsterStats theStats) {
+        super(theName, theStats);
     }
 }

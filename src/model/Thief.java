@@ -7,7 +7,7 @@ import java.util.Random;
  * a Surprise Attack that can earn an extra attack or fail completely.
  *
  * @author Group 7
- * @version 0.1
+ * @version 0.2
  */
 public class Thief extends Hero {
 
@@ -38,11 +38,11 @@ public class Thief extends Hero {
     /**
      * Creates a Thief with the class's starting statistics.
      *
-     * @param name the Thief's name, not null or blank
+     * @param theName the Thief's name, not null or blank
      * @throws IllegalArgumentException if the name is blank
      */
-    public Thief(final String name) {
-        super(name, HIT_POINTS, MIN_DAMAGE, MAX_DAMAGE, ATTACK_SPEED,
+    public Thief(final String theName) {
+        super(theName, HIT_POINTS, MIN_DAMAGE, MAX_DAMAGE, ATTACK_SPEED,
                 CHANCE_TO_HIT, CHANCE_TO_BLOCK);
     }
 
@@ -53,25 +53,28 @@ public class Thief extends Hero {
      * second attack of a success is skipped if the first one defeated the
      * target.
      *
-     * @param target the monster the skill is used on
-     * @param rng the shared source of randomness
+     * @param theTarget the monster the skill is used on
+     * @param theRng the shared source of randomness
      * @return a sentence describing the result, for the battle log
      */
     @Override
-    public String specialSkill(final Monster target, final Random rng) {
-        final double roll = rng.nextDouble();
+    public String specialSkill(final Monster theTarget, final Random theRng) {
+        if (theTarget == null || theRng == null) {
+            throw new IllegalArgumentException("target and rng must not be null");
+        }
+        final double roll = theRng.nextDouble();
         String result;
         if (roll < SURPRISE_CHANCE) {
-            result = getName() + " surprises " + target.getName() + "! "
-                    + attack(target, rng);
-            if (target.isAlive()) {
-                result = result + " " + attack(target, rng);
+            result = getName() + " surprises " + theTarget.getName() + "! "
+                    + attack(theTarget, theRng);
+            if (theTarget.isAlive()) {
+                result = result + " " + attack(theTarget, theRng);
             }
         } else if (roll < SURPRISE_CHANCE + CAUGHT_CHANCE) {
-            result = getName() + " is caught by " + target.getName()
+            result = getName() + " is caught by " + theTarget.getName()
                     + " and makes no attack.";
         } else {
-            result = attack(target, rng);
+            result = attack(theTarget, theRng);
         }
         return result;
     }
