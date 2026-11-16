@@ -273,3 +273,15 @@ ISSUES IN ITERATION 3
 ## Nathan Chiu
 
 ## Liiban Isse
+GameController (3h): new controller class; the direction buttons now move
+  the hero through the dungeon and update the panels.
+- DungeonAdventure (3h): new startup class that builds the dungeon, window
+  and controller and connects them.
+- Room panel and GameView update (3h): "You moved..." messages, smaller
+  buttons, panels updated by the controller, test data removed.
+ 
+ISSUES
+- sqlite-jdbc wasn't on my classpath ("No suitable driver"); fixed by adding
+  the jar from the lib folder.
+- The buttons did nothing until the controller was connected to the room
+  panel; fixed.
