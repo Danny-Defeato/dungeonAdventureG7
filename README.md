@@ -270,7 +270,10 @@ ISSUES IN ITERATION 3
 
 ## John Nguyen
 
-## Nathan Chiu
+## Nathan Chiu 
+- Played through the game now, not all features are accessible yet. Instead, tested each button, prompts and visuals
+  to get an idea of what could be changed for a better user experience and better visual. (3h)
+- Brainstorm ideas for an additional feature for our game that is required for being a 4 person group. (1h)
 
 ## Liiban Isse
 GameController (3h): new controller class; the direction buttons now move
