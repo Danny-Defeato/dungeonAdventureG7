@@ -15,7 +15,7 @@ import java.util.Random;
  * FR-MOV-4), which is included in {@link #toString()}.
  *
  * @author Group 7 (John Nguyen)
- * @version 0.3
+ * @version 0.4
  */
 public abstract class Hero extends DungeonCharacter {
 
@@ -29,59 +29,59 @@ public abstract class Hero extends DungeonCharacter {
     private static final int HEAL_MAX = 15;
 
     /** The chance the hero blocks an incoming attack, from 0.0 to 1.0. */
-    private final double chanceToBlock;
+    private final double myChanceToBlock;
 
     /** The number of healing potions the hero carries. */
-    private int healingPotions;
+    private int myHealingPotions;
 
     /** The number of vision potions the hero carries. */
-    private int visionPotions;
+    private int myVisionPotions;
 
     /** The Pillars of OO the hero has found, in the order found. */
-    private final List<Pillar> pillars;
+    private final List<Pillar> myPillars;
 
     /**
      * Creates a hero with no potions and no pillars. Leading and trailing
      * spaces are removed from the name.
      *
-     * @param name the hero's name, 1 to 20 characters after trimming
-     * @param hitPoints the starting and maximum hit points, above 0
-     * @param minDamage the lowest attack damage, 0 or more
-     * @param maxDamage the highest attack damage, at least minDamage
-     * @param attackSpeed how fast the hero acts, 1 or more
-     * @param chanceToHit the chance an attack hits, from 0.0 to 1.0
-     * @param chanceToBlock the chance to block an attack, from 0.0 to 1.0
+     * @param theName the hero's name, 1 to 20 characters after trimming
+     * @param theHitPoints the starting and maximum hit points, above 0
+     * @param theMinDamage the lowest attack damage, 0 or more
+     * @param theMaxDamage the highest attack damage, at least minDamage
+     * @param theAttackSpeed how fast the hero acts, 1 or more
+     * @param theChanceToHit the chance an attack hits, from 0.0 to 1.0
+     * @param theChanceToBlock the chance to block an attack, from 0.0 to 1.0
      * @throws IllegalArgumentException if any value is out of range
      */
-    protected Hero(final String name, final int hitPoints,
-                   final int minDamage, final int maxDamage,
-                   final int attackSpeed, final double chanceToHit,
-                   final double chanceToBlock) {
-        super(trimmed(name), hitPoints, minDamage, maxDamage, attackSpeed,
-                chanceToHit);
+    protected Hero(final String theName, final int theHitPoints,
+                   final int theMinDamage, final int theMaxDamage,
+                   final int theAttackSpeed, final double theChanceToHit,
+                   final double theChanceToBlock) {
+        super(trimmed(theName), theHitPoints, theMinDamage, theMaxDamage, theAttackSpeed,
+                theChanceToHit);
         if (getName().length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(
                     "name must be at most " + MAX_NAME_LENGTH + " characters");
         }
-        if (chanceToBlock < 0.0 || chanceToBlock > 1.0) {
+        if (theChanceToBlock < MIN_CHANCE || theChanceToBlock > MAX_CHANCE) {
             throw new IllegalArgumentException("chanceToBlock must be 0.0 to 1.0");
         }
-        this.chanceToBlock = chanceToBlock;
-        this.healingPotions = 0;
-        this.visionPotions = 0;
-        this.pillars = new ArrayList<>();
+        this.myChanceToBlock = theChanceToBlock;
+        this.myHealingPotions = 0;
+        this.myVisionPotions = 0;
+        this.myPillars = new ArrayList<>();
     }
 
     /**
      * Removes leading and trailing spaces from a name.
      *
-     * @param name the name to clean, which may be null
+     * @param theName the name to clean, which may be null
      * @return the trimmed name, or null if the name was null
      */
-    private static String trimmed(final String name) {
+    private static String trimmed(final String theName) {
         String result = null;
-        if (name != null) {
-            result = name.trim();
+        if (theName != null) {
+            result = theName.trim();
         }
         return result;
     }
@@ -90,42 +90,51 @@ public abstract class Hero extends DungeonCharacter {
      * Uses the hero's special skill on a monster. Each hero class defines
      * its own skill.
      *
-     * @param target the monster the skill is used on
-     * @param rng the shared source of randomness
+     * @param theTarget the monster the skill is used on
+     * @param theRng the shared source of randomness
      * @return a sentence describing the result, for the battle log
      */
-    public abstract String specialSkill(Monster target, Random rng);
+    public abstract String specialSkill(final Monster theTarget, final Random theRng);
 
     /**
      * Rolls to block an incoming attack.
      *
-     * @param rng the shared source of randomness
+     * @param theRng the shared source of randomness
      * @return true if the hero blocks the attack
      */
-    public boolean block(final Random rng) {
-        return rng.nextDouble() < chanceToBlock;
+    public boolean block(final Random theRng) {
+        if (theRng == null) {
+            throw new IllegalArgumentException("rng must not be null");
+        }
+        return theRng.nextDouble() < myChanceToBlock;
     }
 
     /**
      * Restores hit points. The total never goes above the maximum.
      *
-     * @param amount the hit points to restore
+     * @param theAmount the hit points to restore
      */
-    public void heal(final int amount) {
-        setHitPoints(getHitPoints() + amount);
+    public void heal(final int theAmount) {
+        if (theAmount < 0) {
+            throw new IllegalArgumentException("amount must not be negative");
+        }
+        setHitPoints(getHitPoints() + theAmount);
     }
 
     /**
      * Uses one healing potion to restore 5 to 15 hit points.
      *
-     * @param rng the shared source of randomness
+     * @param theRng the shared source of randomness
      * @return true if a potion was used, false if the hero had none
      */
-    public boolean useHealingPotion(final Random rng) {
-        final boolean used = healingPotions > 0;
+    public boolean useHealingPotion(final Random theRng) {
+        if (theRng == null) {
+            throw new IllegalArgumentException("rng must not be null");
+        }
+        final boolean used = myHealingPotions > 0;
         if (used) {
-            healingPotions--;
-            heal(HEAL_MIN + rng.nextInt(HEAL_MAX - HEAL_MIN + 1));
+            myHealingPotions--;
+            heal(HEAL_MIN + theRng.nextInt(HEAL_MAX - HEAL_MIN + 1));
         }
         return used;
     }
@@ -136,9 +145,9 @@ public abstract class Hero extends DungeonCharacter {
      * @return true if a potion was used, false if the hero had none
      */
     public boolean useVisionPotion() {
-        final boolean used = visionPotions > 0;
+        final boolean used = myVisionPotions > 0;
         if (used) {
-            visionPotions--;
+            myVisionPotions--;
         }
         return used;
     }
@@ -147,14 +156,14 @@ public abstract class Hero extends DungeonCharacter {
      * Adds one healing potion to the hero's inventory.
      */
     public void addHealingPotion() {
-        healingPotions++;
+        myHealingPotions++;
     }
 
     /**
      * Adds one vision potion to the hero's inventory.
      */
     public void addVisionPotion() {
-        visionPotions++;
+        myVisionPotions++;
     }
 
     /**
@@ -163,7 +172,7 @@ public abstract class Hero extends DungeonCharacter {
      * @return the healing potion count
      */
     public int getHealingPotions() {
-        return healingPotions;
+        return myHealingPotions;
     }
 
     /**
@@ -172,30 +181,30 @@ public abstract class Hero extends DungeonCharacter {
      * @return the vision potion count
      */
     public int getVisionPotions() {
-        return visionPotions;
+        return myVisionPotions;
     }
 
     /**
      * Adds a pillar to the hero's collection. A pillar the hero already has
      * (same name) is not added a second time.
      *
-     * @param pillar the pillar the hero found, not null
+     * @param thePillar the pillar the hero found, not null
      * @return true if the pillar was added, false if the hero already had it
      * @throws IllegalArgumentException if the pillar is null
      */
-    public boolean addPillar(final Pillar pillar) {
-        if (pillar == null) {
+    public boolean addPillar(final Pillar thePillar) {
+        if (thePillar == null) {
             throw new IllegalArgumentException("pillar must not be null");
         }
         boolean added = true;
-        for (final Pillar found : pillars) {
-            if (found.getName().equals(pillar.getName())) {
+        for (final Pillar found : myPillars) {
+            if (found.getName().equals(thePillar.getName())) {
                 added = false;
                 break;
             }
         }
         if (added) {
-            pillars.add(pillar);
+            myPillars.add(thePillar);
         }
         return added;
     }
@@ -207,7 +216,7 @@ public abstract class Hero extends DungeonCharacter {
      * @return an unmodifiable list of the pillars found
      */
     public List<Pillar> getPillars() {
-        return Collections.unmodifiableList(pillars);
+        return Collections.unmodifiableList(myPillars);
     }
 
     /**
@@ -216,7 +225,7 @@ public abstract class Hero extends DungeonCharacter {
      * @return true if the hero holds every pillar
      */
     public boolean hasAllPillars() {
-        return pillars.size() == Pillar.TOTAL;
+        return myPillars.size() == Pillar.TOTAL;
     }
 
     /**
@@ -228,8 +237,8 @@ public abstract class Hero extends DungeonCharacter {
     @Override
     public String toString() {
         return getName() + " | HP " + getHitPoints() + "/" + getMaxHitPoints()
-                + " | Healing potions: " + healingPotions
-                + " | Vision potions: " + visionPotions
+                + " | Healing potions: " + myHealingPotions
+                + " | Vision potions: " + myVisionPotions
                 + " | Pillars: " + pillarNames();
     }
 
@@ -240,9 +249,9 @@ public abstract class Hero extends DungeonCharacter {
      */
     private String pillarNames() {
         String result = "none";
-        if (!pillars.isEmpty()) {
+        if (!myPillars.isEmpty()) {
             final StringBuilder names = new StringBuilder();
-            for (final Pillar found : pillars) {
+            for (final Pillar found : myPillars) {
                 if (!names.isEmpty()) {
                     names.append(", ");
                 }

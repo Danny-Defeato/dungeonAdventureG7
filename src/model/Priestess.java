@@ -7,7 +7,7 @@ import java.util.Random;
  * can heal themselves with their special skill.
  *
  * @author Group 7 (John Nguyen)
- * @version 0.1
+ * @version 0.2
  */
 public class Priestess extends Hero {
 
@@ -38,11 +38,11 @@ public class Priestess extends Hero {
     /**
      * Creates a Priestess with the class's starting statistics.
      *
-     * @param name the Priestess's name, not null or blank
+     * @param theName the Priestess's name, not null or blank
      * @throws IllegalArgumentException if the name is blank
      */
-    public Priestess(final String name) {
-        super(name, HIT_POINTS, MIN_DAMAGE, MAX_DAMAGE, ATTACK_SPEED,
+    public Priestess(final String theName) {
+        super(theName, HIT_POINTS, MIN_DAMAGE, MAX_DAMAGE, ATTACK_SPEED,
                 CHANCE_TO_HIT, CHANCE_TO_BLOCK);
     }
 
@@ -50,14 +50,17 @@ public class Priestess extends Hero {
      * Uses Heal. The Priestess restores 25 to 50 of her own hit points, up
      * to her starting hit points. The target is not affected.
      *
-     * @param target the monster in the battle, which this skill ignores
-     * @param rng the shared source of randomness
+     * @param theTarget the monster in the battle, which this skill ignores
+     * @param theRng the shared source of randomness
      * @return a sentence describing the result, for the battle log
      */
     @Override
-    public String specialSkill(final Monster target, final Random rng) {
+    public String specialSkill(final Monster theTarget, final Random theRng) {
+        if (theRng == null) {
+            throw new IllegalArgumentException("rng must not be null");
+        }
         final int before = getHitPoints();
-        heal(MIN_HEAL + rng.nextInt(MAX_HEAL - MIN_HEAL + 1));
+        heal(MIN_HEAL + theRng.nextInt(MAX_HEAL - MIN_HEAL + 1));
         final int restored = getHitPoints() - before;
         return getName() + " heals for " + restored + " hit points.";
     }

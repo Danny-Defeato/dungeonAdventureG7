@@ -13,67 +13,76 @@ import java.util.Random;
  * {@link #attack(DungeonCharacter, Random)}.
  *
  * @author Group 7 (John Nguyen)
- * @version 0.1
+ * @version 0.2
  */
 public abstract class DungeonCharacter implements Serializable {
 
+    /** Lowest value a chance can have. */
+    protected static final double MIN_CHANCE = 0.0;
+
+    /** Highest value a chance can have. */
+    protected static final double MAX_CHANCE = 1.0;
+
+    /** Lowest attack speed a character can have. */
+    protected static final int MIN_ATTACK_SPEED = 1;
+
     /** The character's name. */
-    private final String name;
+    private final String myName;
 
     /** The most hit points the character can have. */
-    private final int maxHitPoints;
+    private final int myMaxHitPoints;
 
     /** The lowest damage a successful attack deals. */
-    private final int minDamage;
+    private final int myMinDamage;
 
     /** The highest damage a successful attack deals. */
-    private final int maxDamage;
+    private final int myMaxDamage;
 
     /** How fast the character acts, where 1 is slowest. */
-    private final int attackSpeed;
+    private final int myAttackSpeed;
 
     /** The chance an attack hits, from 0.0 to 1.0. */
-    private final double chanceToHit;
+    private final double myChanceToHit;
 
     /** The character's current hit points, from 0 to the maximum. */
-    private int hitPoints;
+    private int myHitPoints;
 
     /**
      * Creates a character at full health.
      *
-     * @param name the character's name, not null or blank
-     * @param hitPoints the starting and maximum hit points, above 0
-     * @param minDamage the lowest attack damage, 0 or more
-     * @param maxDamage the highest attack damage, at least minDamage
-     * @param attackSpeed how fast the character acts, 1 or more
-     * @param chanceToHit the chance an attack hits, from 0.0 to 1.0
+     * @param theName the character's name, not null or blank
+     * @param theHitPoints the starting and maximum hit points, above 0
+     * @param theMinDamage the lowest attack damage, 0 or more
+     * @param theMaxDamage the highest attack damage, at least minDamage
+     * @param theAttackSpeed how fast the character acts, 1 or more
+     * @param theChanceToHit the chance an attack hits, from 0.0 to 1.0
      * @throws IllegalArgumentException if any value is out of range
      */
-    protected DungeonCharacter(final String name, final int hitPoints,
-                               final int minDamage, final int maxDamage,
-                               final int attackSpeed, final double chanceToHit) {
-        if (name == null || name.isBlank()) {
+    protected DungeonCharacter(final String theName, final int theHitPoints,
+                               final int theMinDamage, final int theMaxDamage,
+                               final int theAttackSpeed, final double theChanceToHit) {
+        if (theName == null || theName.isBlank()) {
             throw new IllegalArgumentException("name must not be blank");
         }
-        if (hitPoints <= 0) {
+        if (theHitPoints <= 0) {
             throw new IllegalArgumentException("hitPoints must be above 0");
         }
-        if (minDamage < 0 || maxDamage < minDamage) {
+        if (theMinDamage < 0 || theMaxDamage < theMinDamage) {
             throw new IllegalArgumentException("invalid damage range");
         }
-        if (attackSpeed < 1) {
+        if (theAttackSpeed < MIN_ATTACK_SPEED) {
             throw new IllegalArgumentException("attackSpeed must be at least 1");
         }
-        if (chanceToHit < 0.0 || chanceToHit > 1.0) {
+        if (theChanceToHit < MIN_CHANCE || theChanceToHit > MAX_CHANCE) {
             throw new IllegalArgumentException("chanceToHit must be 0.0 to 1.0");
         }
-        this.name = name;
-        this.hitPoints = hitPoints;
-        this.maxHitPoints = hitPoints;
-        this.minDamage = minDamage;
-        this.maxDamage = maxDamage;
-        this.attackSpeed = attackSpeed;
-        this.chanceToHit = chanceToHit;
+        this.myName = theName;
+        this.myHitPoints = theHitPoints;
+        this.myMaxHitPoints = theHitPoints;
+        this.myMinDamage = theMinDamage;
+        this.myMaxDamage = theMaxDamage;
+        this.myAttackSpeed = theAttackSpeed;
+        this.myChanceToHit = theChanceToHit;
     }
 
     /**
@@ -82,7 +91,7 @@ public abstract class DungeonCharacter implements Serializable {
      * @return the name
      */
     public String getName() {
-        return name;
+        return myName;
     }
 
     /**
@@ -91,7 +100,7 @@ public abstract class DungeonCharacter implements Serializable {
      * @return the current hit points, from 0 to the maximum
      */
     public int getHitPoints() {
-        return hitPoints;
+        return myHitPoints;
     }
 
     /**
@@ -100,7 +109,7 @@ public abstract class DungeonCharacter implements Serializable {
      * @return the maximum hit points
      */
     public int getMaxHitPoints() {
-        return maxHitPoints;
+        return myMaxHitPoints;
     }
 
     /**
@@ -109,7 +118,7 @@ public abstract class DungeonCharacter implements Serializable {
      * @return the attack speed, where 1 is slowest
      */
     public int getAttackSpeed() {
-        return attackSpeed;
+        return myAttackSpeed;
     }
 
     /**
@@ -118,31 +127,31 @@ public abstract class DungeonCharacter implements Serializable {
      * @return true if the character has more than 0 hit points
      */
     public boolean isAlive() {
-        return hitPoints > 0;
+        return myHitPoints > 0;
     }
 
     /**
      * Lowers the character's hit points by the given amount. Hit points
      * never drop below 0.
      *
-     * @param amount the damage to take, 0 or more
+     * @param theAmount the damage to take, 0 or more
      * @throws IllegalArgumentException if amount is negative
      */
-    public void takeDamage(final int amount) {
-        if (amount < 0) {
+    public void takeDamage(final int theAmount) {
+        if (theAmount < 0) {
             throw new IllegalArgumentException("amount must not be negative");
         }
-        setHitPoints(hitPoints - amount);
+        setHitPoints(myHitPoints - theAmount);
     }
 
     /**
      * Sets the character's hit points, keeping them between 0 and the
      * maximum. Subclasses use this for healing.
      *
-     * @param hp the new hit points, which are clamped to 0 through the maximum
+     * @param theHp the new hit points, which are clamped to 0 through the maximum
      */
-    protected void setHitPoints(final int hp) {
-        hitPoints = Math.max(0, Math.min(hp, maxHitPoints));
+    protected void setHitPoints(final int theHp) {
+        myHitPoints = Math.max(0, Math.min(theHp, myMaxHitPoints));
     }
 
     /**
@@ -150,18 +159,21 @@ public abstract class DungeonCharacter implements Serializable {
      * the chance to hit. A hit deals random damage between the minimum and
      * maximum damage and is applied to the foe.
      *
-     * @param foe the opponent to attack
-     * @param rng the shared source of randomness
+     * @param theFoe the opponent to attack
+     * @param theRng the shared source of randomness
      * @return a sentence describing the result, for the battle log
      */
-    public String attack(final DungeonCharacter foe, final Random rng) {
+    public String attack(final DungeonCharacter theFoe, final Random theRng) {
+        if (theFoe == null || theRng == null) {
+            throw new IllegalArgumentException("foe and rng must not be null");
+        }
         final String result;
-        if (rng.nextDouble() < chanceToHit) {
-            final int damage = minDamage + rng.nextInt(maxDamage - minDamage + 1);
-            foe.takeDamage(damage);
-            result = name + " hits " + foe.getName() + " for " + damage + " damage.";
+        if (theRng.nextDouble() < myChanceToHit) {
+            final int damage = myMinDamage + theRng.nextInt(myMaxDamage - myMinDamage + 1);
+            theFoe.takeDamage(damage);
+            result = myName + " hits " + theFoe.getName() + " for " + damage + " damage.";
         } else {
-            result = name + " misses " + foe.getName() + ".";
+            result = myName + " misses " + theFoe.getName() + ".";
         }
         return result;
     }
