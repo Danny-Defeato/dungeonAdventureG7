@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -27,7 +26,7 @@ import java.util.Random;
  * gives the same dungeon.
  *
  * @author Group 7 (Alex Douk)
- * @version 0.1
+ * @version 0.2
  */
 public class DungeonBuilder {
 
@@ -46,43 +45,66 @@ public class DungeonBuilder {
     /** Chance that a wall between two rooms is opened after carving. */
     public static final double EXTRA_DOOR_CHANCE = 0.08;
 
-    /** Rooms needed: entrance, exit and four pillars. */
-    private static final int MIN_ROOMS = 2 + Pillar.TOTAL;
+    /** Position in the shuffled room list of the entrance. */
+    private static final int ENTRANCE_INDEX = 0;
+
+    /** Position in the shuffled room list of the exit. */
+    private static final int EXIT_INDEX = 1;
+
+    /** Position in the shuffled room list of the first pillar room. */
+    private static final int FIRST_PILLAR_INDEX = 2;
+
+    /** Position in the shuffled room list of the first ordinary room. */
+    private static final int FIRST_ORDINARY_INDEX = FIRST_PILLAR_INDEX + Pillar.TOTAL;
 
     /** How many mazes to try before giving up. */
     private static final int MAX_ATTEMPTS = 100;
 
-    private final MonsterFactory monsterFactory;
-    private final Random rng;
-    private int rows = DEFAULT_SIZE;
-    private int cols = DEFAULT_SIZE;
+    /** The factory that makes the monsters. */
+    private final MonsterFactory myMonsterFactory;
+
+    /** The shared source of randomness. */
+    private final Random myRng;
+
+    /** The number of rows of the dungeon to build. */
+    private int myRows = DEFAULT_SIZE;
+
+    /** The number of columns of the dungeon to build. */
+    private int myCols = DEFAULT_SIZE;
 
     /**
      * Creates a builder.
      *
-     * @param monsterFactory the factory used to make monsters, not null
-     * @param rng the shared source of randomness, not null
+     * @param theMonsterFactory the factory used to make monsters, not null
+     * @param theRng the shared source of randomness, not null
+     * @throws IllegalArgumentException if either argument is null
      */
-    public DungeonBuilder(final MonsterFactory monsterFactory, final Random rng) {
-        this.monsterFactory = Objects.requireNonNull(monsterFactory, "monsterFactory");
-        this.rng = Objects.requireNonNull(rng, "rng");
+    public DungeonBuilder(final MonsterFactory theMonsterFactory, final Random theRng) {
+        if (theMonsterFactory == null) {
+            throw new IllegalArgumentException("monsterFactory must not be null");
+        }
+        if (theRng == null) {
+            throw new IllegalArgumentException("rng must not be null");
+        }
+        myMonsterFactory = theMonsterFactory;
+        myRng = theRng;
     }
 
     /**
      * Sets the size of the dungeon.
      *
-     * @param rows the number of rows, at least {@link #MIN_SIZE}
-     * @param cols the number of columns, at least {@link #MIN_SIZE}
+     * @param theRows the number of rows, at least {@link #MIN_SIZE}
+     * @param theCols the number of columns, at least {@link #MIN_SIZE}
      * @return this builder
      * @throws IllegalArgumentException if the size is too small
      */
-    public DungeonBuilder setSize(final int rows, final int cols) {
-        if (rows < MIN_SIZE || cols < MIN_SIZE) {
+    public DungeonBuilder setSize(final int theRows, final int theCols) {
+        if (theRows < MIN_SIZE || theCols < MIN_SIZE) {
             throw new IllegalArgumentException(
                     "dungeon must be at least " + MIN_SIZE + " x " + MIN_SIZE);
         }
-        this.rows = rows;
-        this.cols = cols;
+        myRows = theRows;
+        myCols = theCols;
         return this;
     }
 
@@ -104,9 +126,9 @@ public class DungeonBuilder {
     }
 
     private Dungeon tryBuild() {
-        final Room[][] grid = new Room[rows][cols];
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
+        final Room[][] grid = new Room[myRows][myCols];
+        for (int r = 0; r < myRows; r++) {
+            for (int c = 0; c < myCols; c++) {
                 grid[r][c] = new Room(r, c);
             }
         }
@@ -117,46 +139,46 @@ public class DungeonBuilder {
         for (final Room[] row : grid) {
             Collections.addAll(all, row);
         }
-        Collections.shuffle(all, rng);
-        final Room entrance = all.get(0);
-        final Room exit = all.get(1);
+        Collections.shuffle(all, myRng);
+        final Room entrance = all.get(ENTRANCE_INDEX);
+        final Room exit = all.get(EXIT_INDEX);
         entrance.addItem(new Entrance());
         exit.addItem(new Exit());
-        exit.setMonster(monsterFactory.createRandom(rng, true));
+        exit.setMonster(myMonsterFactory.createRandom(myRng, true));
         for (int i = 0; i < Pillar.TOTAL; i++) {
-            final Room room = all.get(2 + i);
+            final Room room = all.get(FIRST_PILLAR_INDEX + i);
             room.addItem(new Pillar(Pillar.NAMES.get(i)));
-            room.setMonster(monsterFactory.createRandom(rng, true));
+            room.setMonster(myMonsterFactory.createRandom(myRng, true));
         }
-        for (int i = MIN_ROOMS; i < all.size(); i++) {
+        for (int i = FIRST_ORDINARY_INDEX; i < all.size(); i++) {
             placeItems(all.get(i));
         }
-        for (int i = MIN_ROOMS; i < all.size(); i++) {
-            if (rng.nextDouble() < MONSTER_CHANCE) {
-                all.get(i).setMonster(monsterFactory.createRandom(rng, false));
+        for (int i = FIRST_ORDINARY_INDEX; i < all.size(); i++) {
+            if (myRng.nextDouble() < MONSTER_CHANCE) {
+                all.get(i).setMonster(myMonsterFactory.createRandom(myRng, false));
             }
         }
         return new Dungeon(grid, entrance, exit);
     }
 
     /** Each of a healing potion, a vision potion and a pit is placed independently. */
-    private void placeItems(final Room room) {
-        if (rng.nextDouble() < ITEM_CHANCE) {
-            room.addItem(new HealthPotion());
+    private void placeItems(final Room theRoom) {
+        if (myRng.nextDouble() < ITEM_CHANCE) {
+            theRoom.addItem(new HealthPotion());
         }
-        if (rng.nextDouble() < ITEM_CHANCE) {
-            room.addItem(new VisionPotion());
+        if (myRng.nextDouble() < ITEM_CHANCE) {
+            theRoom.addItem(new VisionPotion());
         }
-        if (rng.nextDouble() < ITEM_CHANCE) {
-            room.addItem(new Pit());
+        if (myRng.nextDouble() < ITEM_CHANCE) {
+            theRoom.addItem(new Pit());
         }
     }
 
     /** Randomized depth-first search: opens a door between neighbors. */
-    private void carve(final Room[][] grid) {
-        final boolean[][] seen = new boolean[rows][cols];
+    private void carve(final Room[][] theGrid) {
+        final boolean[][] seen = new boolean[myRows][myCols];
         final Deque<Room> stack = new ArrayDeque<>();
-        final Room start = grid[rng.nextInt(rows)][rng.nextInt(cols)];
+        final Room start = theGrid[myRng.nextInt(myRows)][myRng.nextInt(myCols)];
         seen[start.getRow()][start.getCol()] = true;
         stack.push(start);
         while (!stack.isEmpty()) {
@@ -172,8 +194,8 @@ public class DungeonBuilder {
             if (options.isEmpty()) {
                 stack.pop();
             } else {
-                final Direction d = options.get(rng.nextInt(options.size()));
-                final Room next = grid[room.getRow() + d.getRowDelta()]
+                final Direction d = options.get(myRng.nextInt(options.size()));
+                final Room next = theGrid[room.getRow() + d.getRowDelta()]
                         [room.getCol() + d.getColDelta()];
                 connect(room, d, next);
                 seen[next.getRow()][next.getCol()] = true;
@@ -183,25 +205,26 @@ public class DungeonBuilder {
     }
 
     /** Opens some extra walls (south and east only, so each wall is tried once). */
-    private void openExtraDoors(final Room[][] grid) {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (r + 1 < rows && rng.nextDouble() < EXTRA_DOOR_CHANCE) {
-                    connect(grid[r][c], Direction.SOUTH, grid[r + 1][c]);
+    private void openExtraDoors(final Room[][] theGrid) {
+        for (int r = 0; r < myRows; r++) {
+            for (int c = 0; c < myCols; c++) {
+                if (r + 1 < myRows && myRng.nextDouble() < EXTRA_DOOR_CHANCE) {
+                    connect(theGrid[r][c], Direction.SOUTH, theGrid[r + 1][c]);
                 }
-                if (c + 1 < cols && rng.nextDouble() < EXTRA_DOOR_CHANCE) {
-                    connect(grid[r][c], Direction.EAST, grid[r][c + 1]);
+                if (c + 1 < myCols && myRng.nextDouble() < EXTRA_DOOR_CHANCE) {
+                    connect(theGrid[r][c], Direction.EAST, theGrid[r][c + 1]);
                 }
             }
         }
     }
 
-    private static void connect(final Room from, final Direction d, final Room to) {
-        from.addDoor(d);
-        to.addDoor(d.opposite());
+    private static void connect(final Room theFrom, final Direction theDirection,
+                                final Room theTo) {
+        theFrom.addDoor(theDirection);
+        theTo.addDoor(theDirection.opposite());
     }
 
-    private boolean inBounds(final int r, final int c) {
-        return r >= 0 && r < rows && c >= 0 && c < cols;
+    private boolean inBounds(final int theRow, final int theCol) {
+        return theRow >= 0 && theRow < myRows && theCol >= 0 && theCol < myCols;
     }
 }

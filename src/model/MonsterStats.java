@@ -8,144 +8,156 @@ import java.util.Objects;
  * from rows of the SQLite monster table and handed to a monster factory.
  *
  * @author Group 7 (Alex Douk)
- * @version 0.1
+ * @version 0.2
  */
 public final class MonsterStats implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    /** The smallest chance, meaning never. */
+    private static final double MIN_CHANCE = 0.0;
+
+    /** The largest chance, meaning always. */
+    private static final double MAX_CHANCE = 1.0;
+
+    /** The slowest attack speed. */
+    private static final int MIN_ATTACK_SPEED = 1;
+
     /** The monster's starting hit points. */
-    private final int hitPoints;
+    private final int myHitPoints;
 
     /** The lowest damage an attack deals. */
-    private final int minDamage;
+    private final int myMinDamage;
 
     /** The highest damage an attack deals. */
-    private final int maxDamage;
+    private final int myMaxDamage;
 
     /** How fast the monster acts, where 1 is slowest. */
-    private final int attackSpeed;
+    private final int myAttackSpeed;
 
     /** The chance an attack hits, from 0.0 to 1.0. */
-    private final double chanceToHit;
+    private final double myChanceToHit;
 
     /** The chance the monster heals after being hit, from 0.0 to 1.0. */
-    private final double chanceToHeal;
+    private final double myChanceToHeal;
 
     /** The fewest hit points a heal restores. */
-    private final int minHeal;
+    private final int myMinHeal;
 
     /** The most hit points a heal restores. */
-    private final int maxHeal;
+    private final int myMaxHeal;
 
     /**
      * Creates a set of monster statistics.
      *
-     * @param hitPoints starting hit points, above 0
-     * @param minDamage lowest attack damage, 0 or more
-     * @param maxDamage highest attack damage, at least minDamage
-     * @param attackSpeed attack speed, 1 or more
-     * @param chanceToHit chance to hit, from 0.0 to 1.0
-     * @param chanceToHeal chance to heal, from 0.0 to 1.0
-     * @param minHeal fewest hit points healed, 0 or more
-     * @param maxHeal most hit points healed, at least minHeal
+     * @param theHitPoints starting hit points, above 0
+     * @param theMinDamage lowest attack damage, 0 or more
+     * @param theMaxDamage highest attack damage, at least theMinDamage
+     * @param theAttackSpeed attack speed, 1 or more
+     * @param theChanceToHit chance to hit, from 0.0 to 1.0
+     * @param theChanceToHeal chance to heal, from 0.0 to 1.0
+     * @param theMinHeal fewest hit points healed, 0 or more
+     * @param theMaxHeal most hit points healed, at least theMinHeal
      * @throws IllegalArgumentException if any value is out of range
      */
-    public MonsterStats(final int hitPoints, final int minDamage,
-                        final int maxDamage, final int attackSpeed,
-                        final double chanceToHit, final double chanceToHeal,
-                        final int minHeal, final int maxHeal) {
-        if (hitPoints <= 0) {
+    public MonsterStats(final int theHitPoints, final int theMinDamage,
+                        final int theMaxDamage, final int theAttackSpeed,
+                        final double theChanceToHit, final double theChanceToHeal,
+                        final int theMinHeal, final int theMaxHeal) {
+        if (theHitPoints <= 0) {
             throw new IllegalArgumentException("hitPoints must be above 0");
         }
-        if (minDamage < 0 || maxDamage < minDamage) {
+        if (theMinDamage < 0 || theMaxDamage < theMinDamage) {
             throw new IllegalArgumentException("invalid damage range");
         }
-        if (attackSpeed < 1) {
-            throw new IllegalArgumentException("attackSpeed must be at least 1");
+        if (theAttackSpeed < MIN_ATTACK_SPEED) {
+            throw new IllegalArgumentException(
+                    "attackSpeed must be at least " + MIN_ATTACK_SPEED);
         }
-        if (chanceToHit < 0.0 || chanceToHit > 1.0) {
+        if (theChanceToHit < MIN_CHANCE || theChanceToHit > MAX_CHANCE) {
             throw new IllegalArgumentException("chanceToHit must be 0.0 to 1.0");
         }
-        if (chanceToHeal < 0.0 || chanceToHeal > 1.0) {
+        if (theChanceToHeal < MIN_CHANCE || theChanceToHeal > MAX_CHANCE) {
             throw new IllegalArgumentException("chanceToHeal must be 0.0 to 1.0");
         }
-        if (minHeal < 0 || maxHeal < minHeal) {
+        if (theMinHeal < 0 || theMaxHeal < theMinHeal) {
             throw new IllegalArgumentException("invalid heal range");
         }
-        this.hitPoints = hitPoints;
-        this.minDamage = minDamage;
-        this.maxDamage = maxDamage;
-        this.attackSpeed = attackSpeed;
-        this.chanceToHit = chanceToHit;
-        this.chanceToHeal = chanceToHeal;
-        this.minHeal = minHeal;
-        this.maxHeal = maxHeal;
+        myHitPoints = theHitPoints;
+        myMinDamage = theMinDamage;
+        myMaxDamage = theMaxDamage;
+        myAttackSpeed = theAttackSpeed;
+        myChanceToHit = theChanceToHit;
+        myChanceToHeal = theChanceToHeal;
+        myMinHeal = theMinHeal;
+        myMaxHeal = theMaxHeal;
     }
 
     /** @return the starting hit points */
     public int getHitPoints() {
-        return hitPoints;
+        return myHitPoints;
     }
 
     /** @return the lowest attack damage */
     public int getMinDamage() {
-        return minDamage;
+        return myMinDamage;
     }
 
     /** @return the highest attack damage */
     public int getMaxDamage() {
-        return maxDamage;
+        return myMaxDamage;
     }
 
     /** @return the attack speed */
     public int getAttackSpeed() {
-        return attackSpeed;
+        return myAttackSpeed;
     }
 
     /** @return the chance to hit, from 0.0 to 1.0 */
     public double getChanceToHit() {
-        return chanceToHit;
+        return myChanceToHit;
     }
 
     /** @return the chance to heal, from 0.0 to 1.0 */
     public double getChanceToHeal() {
-        return chanceToHeal;
+        return myChanceToHeal;
     }
 
     /** @return the fewest hit points a heal restores */
     public int getMinHeal() {
-        return minHeal;
+        return myMinHeal;
     }
 
     /** @return the most hit points a heal restores */
     public int getMaxHeal() {
-        return maxHeal;
+        return myMaxHeal;
     }
 
     @Override
-    public boolean equals(final Object other) {
-        boolean result = this == other;
-        if (!result && other instanceof MonsterStats) {
-            final MonsterStats o = (MonsterStats) other;
-            result = hitPoints == o.hitPoints && minDamage == o.minDamage
-                    && maxDamage == o.maxDamage && attackSpeed == o.attackSpeed
-                    && Double.compare(chanceToHit, o.chanceToHit) == 0
-                    && Double.compare(chanceToHeal, o.chanceToHeal) == 0
-                    && minHeal == o.minHeal && maxHeal == o.maxHeal;
+    public boolean equals(final Object theOther) {
+        boolean result = this == theOther;
+        if (!result && theOther instanceof MonsterStats) {
+            final MonsterStats o = (MonsterStats) theOther;
+            result = myHitPoints == o.myHitPoints && myMinDamage == o.myMinDamage
+                    && myMaxDamage == o.myMaxDamage && myAttackSpeed == o.myAttackSpeed
+                    && Double.compare(myChanceToHit, o.myChanceToHit) == 0
+                    && Double.compare(myChanceToHeal, o.myChanceToHeal) == 0
+                    && myMinHeal == o.myMinHeal && myMaxHeal == o.myMaxHeal;
         }
         return result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hitPoints, minDamage, maxDamage, attackSpeed,
-                chanceToHit, chanceToHeal, minHeal, maxHeal);
+        return Objects.hash(myHitPoints, myMinDamage, myMaxDamage, myAttackSpeed,
+                myChanceToHit, myChanceToHeal, myMinHeal, myMaxHeal);
     }
 
     @Override
     public String toString() {
-        return "MonsterStats[hp=" + hitPoints + ", damage=" + minDamage + "-"
-                + maxDamage + ", speed=" + attackSpeed + ", hit=" + chanceToHit
-                + ", healChance=" + chanceToHeal + ", heal=" + minHeal + "-"
-                + maxHeal + "]";
+        return "MonsterStats[hp=" + myHitPoints + ", damage=" + myMinDamage + "-"
+                + myMaxDamage + ", speed=" + myAttackSpeed + ", hit=" + myChanceToHit
+                + ", healChance=" + myChanceToHeal + ", heal=" + myMinHeal + "-"
+                + myMaxHeal + "]";
     }
 }

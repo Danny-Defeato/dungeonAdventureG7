@@ -1,7 +1,6 @@
 package src.model;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -14,26 +13,39 @@ import java.util.Random;
  * statistics are unchanged.
  *
  * @author Group 7 (Alex Douk)
- * @version 0.1
+ * @version 0.2
  */
 public class MonsterFactory {
 
     /** How much stronger a guardian is: +25% hit points and damage. */
     public static final double GUARDIAN_MULTIPLIER = 1.25;
 
+    /** The type name of an Ogre, as stored in the database. */
+    private static final String OGRE = "Ogre";
+
+    /** The type name of a Gremlin, as stored in the database. */
+    private static final String GREMLIN = "Gremlin";
+
+    /** The type name of a Skeleton, as stored in the database. */
+    private static final String SKELETON = "Skeleton";
+
     /** The monster types the factory knows how to build. */
-    private static final List<String> TYPES = List.of("Gremlin", "Ogre", "Skeleton");
+    private static final List<String> TYPES = List.of(GREMLIN, OGRE, SKELETON);
 
     /** The database the statistics are read from. */
-    private final SQLiteDatabase db;
+    private final SQLiteDatabase myDatabase;
 
     /**
      * Creates a factory that reads statistics from the given database.
      *
-     * @param db the open database, not null
+     * @param theDatabase the open database, not null
+     * @throws IllegalArgumentException if the database is null
      */
-    public MonsterFactory(final SQLiteDatabase db) {
-        this.db = Objects.requireNonNull(db, "db");
+    public MonsterFactory(final SQLiteDatabase theDatabase) {
+        if (theDatabase == null) {
+            throw new IllegalArgumentException("database must not be null");
+        }
+        myDatabase = theDatabase;
     }
 
     /**
@@ -48,52 +60,62 @@ public class MonsterFactory {
     /**
      * Creates a monster of the given type. The monster's name is its type.
      *
-     * @param type the type, such as "Ogre"; not blank
-     * @param guardian true to build the stronger guardian version
+     * @param theType the type, such as "Ogre"; not blank
+     * @param theGuardian true to build the stronger guardian version
      * @return a new monster
      * @throws IllegalArgumentException if the type is blank, unsupported, or
      *         has no row in the database
      */
-    public Monster create(final String type, final boolean guardian) {
-        if (type == null || type.isBlank()) {
+    public Monster create(final String theType, final boolean theGuardian) {
+        if (theType == null || theType.isBlank()) {
             throw new IllegalArgumentException("type must not be blank");
         }
-        if (!TYPES.contains(type)) {
-            throw new IllegalArgumentException("Unsupported monster type: " + type);
+        if (!TYPES.contains(theType)) {
+            throw new IllegalArgumentException("Unsupported monster type: " + theType);
         }
-        MonsterStats stats = db.loadMonsterStats(type);
-        if (guardian) {
+        MonsterStats stats = myDatabase.loadMonsterStats(theType);
+        if (theGuardian) {
             stats = boost(stats);
         }
-        switch (type) {
-            case "Ogre":
-                return new Ogre(type, stats);
-            case "Gremlin":
-                return new Gremlin(type, stats);
+        final Monster monster;
+        switch (theType) {
+            case OGRE:
+                monster = new Ogre(theType, stats);
+                break;
+            case GREMLIN:
+                monster = new Gremlin(theType, stats);
+                break;
             default:
-                return new Skeleton(type, stats);
+                monster = new Skeleton(theType, stats);
+                break;
         }
+        return monster;
     }
 
     /**
      * Creates a monster of a randomly chosen type.
      *
-     * @param rng the shared source of randomness, not null
-     * @param guardian true to build the stronger guardian version
+     * @param theRng the shared source of randomness, not null
+     * @param theGuardian true to build the stronger guardian version
      * @return a new monster
+     * @throws IllegalArgumentException if the random source is null
      */
-    public Monster createRandom(final Random rng, final boolean guardian) {
-        Objects.requireNonNull(rng, "rng");
-        return create(TYPES.get(rng.nextInt(TYPES.size())), guardian);
+    public Monster createRandom(final Random theRng, final boolean theGuardian) {
+        if (theRng == null) {
+            throw new IllegalArgumentException("rng must not be null");
+        }
+        return create(TYPES.get(theRng.nextInt(TYPES.size())), theGuardian);
     }
 
-    private static MonsterStats boost(final MonsterStats s) {
-        return new MonsterStats(scale(s.getHitPoints()), scale(s.getMinDamage()),
-                scale(s.getMaxDamage()), s.getAttackSpeed(), s.getChanceToHit(),
-                s.getChanceToHeal(), s.getMinHeal(), s.getMaxHeal());
+    private static MonsterStats boost(final MonsterStats theStats) {
+        return new MonsterStats(scale(theStats.getHitPoints()),
+                scale(theStats.getMinDamage()), scale(theStats.getMaxDamage()),
+                theStats.getAttackSpeed(), theStats.getChanceToHit(),
+                theStats.getChanceToHeal(), theStats.getMinHeal(),
+                theStats.getMaxHeal());
     }
 
-    private static int scale(final int value) {
-        return (int) Math.round(value * GUARDIAN_MULTIPLIER);
+    private static int scale(final int theValue) {
+        return (int) Math.round(theValue * GUARDIAN_MULTIPLIER);
     }
 }

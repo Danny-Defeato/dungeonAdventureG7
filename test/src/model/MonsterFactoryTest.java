@@ -117,7 +117,7 @@ class MonsterFactoryTest {
 
     @Test
     void nullDatabaseRejected() {
-        assertThrows(NullPointerException.class, () -> new MonsterFactory(null));
+        assertThrows(IllegalArgumentException.class, () -> new MonsterFactory(null));
     }
 
     @Test
