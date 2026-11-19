@@ -35,9 +35,13 @@ public class Pit extends RoomItem {
      * @param theHero the hero who entered the room, not null
      * @param theRng the shared source of randomness, not null
      * @return a message saying how much damage the hero took
+     * @throws IllegalArgumentException if the hero or the random source is null
      */
     @Override
     public String applyTo(final Hero theHero, final Random theRng) {
+        if (theHero == null || theRng == null) {
+            throw new IllegalArgumentException("hero and rng must not be null");
+        }
         final int damage = MIN_DAMAGE + theRng.nextInt(MAX_DAMAGE - MIN_DAMAGE + 1);
         theHero.takeDamage(damage);
         return "You fell into a pit and lost " + damage + " hit points!";

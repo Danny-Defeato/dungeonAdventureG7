@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Manages the SQLite database that stores monster statistics. On creation it
@@ -19,12 +18,15 @@ import java.util.Objects;
  * rows when the table is empty. All queries use {@link PreparedStatement}.
  *
  * @author Group 7 (Alex Douk)
- * @version 0.1
+ * @version 0.2
  */
 public class SQLiteDatabase implements AutoCloseable {
 
     /** The default database location, relative to the project folder. */
     public static final String DEFAULT_URL = "jdbc:sqlite:dungeon.db";
+
+    /** The start of every JDBC url for a SQLite file. */
+    private static final String URL_PREFIX = "jdbc:sqlite:";
 
     private static final String CREATE_SQL =
             "CREATE TABLE IF NOT EXISTS monster_stats ("
@@ -51,30 +53,52 @@ public class SQLiteDatabase implements AutoCloseable {
     private static final String TYPES_SQL =
             "SELECT type FROM monster_stats ORDER BY type";
 
+    private static final String OGRE_TYPE = "Ogre";
+
+    private static final String GREMLIN_TYPE = "Gremlin";
+
+    private static final String SKELETON_TYPE = "Skeleton";
+
+    /** The default Ogre statistics (SRS 3.7). */
+    private static final MonsterStats DEFAULT_OGRE =
+            new MonsterStats(200, 30, 60, 2, 0.6, 0.1, 30, 60);
+
+    /** The default Gremlin statistics (SRS 3.7). */
+    private static final MonsterStats DEFAULT_GREMLIN =
+            new MonsterStats(70, 15, 30, 5, 0.8, 0.4, 20, 40);
+
+    /** The default Skeleton statistics (SRS 3.7). */
+    private static final MonsterStats DEFAULT_SKELETON =
+            new MonsterStats(100, 30, 50, 3, 0.8, 0.3, 30, 50);
+
     /** The JDBC url of the database. */
-    private final String url;
+    private final String myUrl;
 
     /** The open connection. */
-    private Connection connection;
+    private Connection myConnection;
 
     /**
      * Opens the database at the given JDBC url, creating the table and the
      * default monster rows if they do not exist yet.
      *
-     * @param url a JDBC url such as {@code jdbc:sqlite:dungeon.db}
+     * @param theUrl a JDBC url such as {@code jdbc:sqlite:dungeon.db}
+     * @throws IllegalArgumentException if the url is null
      * @throws IllegalStateException if the database cannot be opened or set up
      */
-    public SQLiteDatabase(final String url) {
-        this.url = Objects.requireNonNull(url, "url");
+    public SQLiteDatabase(final String theUrl) {
+        if (theUrl == null) {
+            throw new IllegalArgumentException("url must not be null");
+        }
+        myUrl = theUrl;
         try {
-            connection = DriverManager.getConnection(url);
-            try (Statement st = connection.createStatement()) {
+            myConnection = DriverManager.getConnection(theUrl);
+            try (Statement st = myConnection.createStatement()) {
                 st.execute(CREATE_SQL);
             }
             seedDefaultsIfEmpty();
         } catch (SQLException e) {
             close();
-            throw new IllegalStateException("Could not open database at " + url, e);
+            throw new IllegalStateException("Could not open database at " + theUrl, e);
         }
     }
 
@@ -82,19 +106,22 @@ public class SQLiteDatabase implements AutoCloseable {
      * Opens a database file that must already exist, as the game does at
      * launch (SRS 3.1). Unlike the constructor, this never creates a new file.
      *
-     * @param file the path of the database file, such as {@code dungeon.db}
+     * @param theFile the path of the database file, such as {@code dungeon.db}
      * @return the opened database
+     * @throws IllegalArgumentException if the path is null
      * @throws IllegalStateException if the file is missing, unreadable, or not
      *         a usable SQLite database; the message names the absolute path
      */
-    public static SQLiteDatabase openExisting(final Path file) {
-        Objects.requireNonNull(file, "file");
-        final Path abs = file.toAbsolutePath();
+    public static SQLiteDatabase openExisting(final Path theFile) {
+        if (theFile == null) {
+            throw new IllegalArgumentException("file must not be null");
+        }
+        final Path abs = theFile.toAbsolutePath();
         if (!Files.isRegularFile(abs) || !Files.isReadable(abs)) {
             throw new IllegalStateException(
                     "Monster database not found or unreadable: " + abs);
         }
-        return new SQLiteDatabase("jdbc:sqlite:" + abs);
+        return new SQLiteDatabase(URL_PREFIX + abs);
     }
 
     /**
@@ -105,7 +132,7 @@ public class SQLiteDatabase implements AutoCloseable {
      */
     public List<String> getAllTypes() {
         final List<String> types = new ArrayList<>();
-        try (Statement st = connection.createStatement();
+        try (Statement st = myConnection.createStatement();
              ResultSet rs = st.executeQuery(TYPES_SQL)) {
             while (rs.next()) {
                 types.add(rs.getString("type"));
@@ -122,52 +149,54 @@ public class SQLiteDatabase implements AutoCloseable {
      * @return the url
      */
     public String getUrl() {
-        return url;
+        return myUrl;
     }
 
     /**
      * Stores the statistics for a monster type, replacing any existing row
      * with the same type.
      *
-     * @param type the monster type name, such as "Ogre"; not null or blank
-     * @param stats the statistics to store, not null
-     * @throws IllegalArgumentException if type is blank
+     * @param theType the monster type name, such as "Ogre"; not null or blank
+     * @param theStats the statistics to store, not null
+     * @throws IllegalArgumentException if the type is blank or the stats are null
      * @throws IllegalStateException if the database operation fails
      */
-    public void insertMonsterStats(final String type, final MonsterStats stats) {
-        requireType(type);
-        Objects.requireNonNull(stats, "stats");
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_SQL)) {
-            ps.setString(1, type);
-            ps.setInt(2, stats.getHitPoints());
-            ps.setInt(3, stats.getMinDamage());
-            ps.setInt(4, stats.getMaxDamage());
-            ps.setInt(5, stats.getAttackSpeed());
-            ps.setDouble(6, stats.getChanceToHit());
-            ps.setDouble(7, stats.getChanceToHeal());
-            ps.setInt(8, stats.getMinHeal());
-            ps.setInt(9, stats.getMaxHeal());
+    public void insertMonsterStats(final String theType, final MonsterStats theStats) {
+        requireType(theType);
+        if (theStats == null) {
+            throw new IllegalArgumentException("stats must not be null");
+        }
+        try (PreparedStatement ps = myConnection.prepareStatement(INSERT_SQL)) {
+            ps.setString(1, theType);
+            ps.setInt(2, theStats.getHitPoints());
+            ps.setInt(3, theStats.getMinDamage());
+            ps.setInt(4, theStats.getMaxDamage());
+            ps.setInt(5, theStats.getAttackSpeed());
+            ps.setDouble(6, theStats.getChanceToHit());
+            ps.setDouble(7, theStats.getChanceToHeal());
+            ps.setInt(8, theStats.getMinHeal());
+            ps.setInt(9, theStats.getMaxHeal());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new IllegalStateException("Could not store " + type, e);
+            throw new IllegalStateException("Could not store " + theType, e);
         }
     }
 
     /**
      * Loads the statistics for a monster type.
      *
-     * @param type the monster type name, such as "Ogre"
+     * @param theType the monster type name, such as "Ogre"
      * @return the stored statistics
      * @throws IllegalArgumentException if type is blank or no row exists for it
      * @throws IllegalStateException if the database operation fails
      */
-    public MonsterStats loadMonsterStats(final String type) {
-        requireType(type);
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_SQL)) {
-            ps.setString(1, type);
+    public MonsterStats loadMonsterStats(final String theType) {
+        requireType(theType);
+        try (PreparedStatement ps = myConnection.prepareStatement(SELECT_SQL)) {
+            ps.setString(1, theType);
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
-                    throw new IllegalArgumentException("No monster type: " + type);
+                    throw new IllegalArgumentException("No monster type: " + theType);
                 }
                 return new MonsterStats(rs.getInt("hitPoints"),
                         rs.getInt("minDamage"), rs.getInt("maxDamage"),
@@ -176,7 +205,7 @@ public class SQLiteDatabase implements AutoCloseable {
                         rs.getInt("maxHeal"));
             }
         } catch (SQLException e) {
-            throw new IllegalStateException("Could not load " + type, e);
+            throw new IllegalStateException("Could not load " + theType, e);
         }
     }
 
@@ -185,32 +214,29 @@ public class SQLiteDatabase implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (connection != null) {
+        if (myConnection != null) {
             try {
-                connection.close();
+                myConnection.close();
             } catch (SQLException e) {
                 // nothing useful to do; the connection is being discarded
             }
-            connection = null;
+            myConnection = null;
         }
     }
 
     private void seedDefaultsIfEmpty() throws SQLException {
-        try (Statement st = connection.createStatement();
+        try (Statement st = myConnection.createStatement();
              ResultSet rs = st.executeQuery(COUNT_SQL)) {
             if (rs.next() && rs.getInt(1) == 0) {
-                insertMonsterStats("Ogre",
-                        new MonsterStats(200, 30, 60, 2, 0.6, 0.1, 30, 60));
-                insertMonsterStats("Gremlin",
-                        new MonsterStats(70, 15, 30, 5, 0.8, 0.4, 20, 40));
-                insertMonsterStats("Skeleton",
-                        new MonsterStats(100, 30, 50, 3, 0.8, 0.3, 30, 50));
+                insertMonsterStats(OGRE_TYPE, DEFAULT_OGRE);
+                insertMonsterStats(GREMLIN_TYPE, DEFAULT_GREMLIN);
+                insertMonsterStats(SKELETON_TYPE, DEFAULT_SKELETON);
             }
         }
     }
 
-    private static void requireType(final String type) {
-        if (type == null || type.isBlank()) {
+    private static void requireType(final String theType) {
+        if (theType == null || theType.isBlank()) {
             throw new IllegalArgumentException("type must not be blank");
         }
     }

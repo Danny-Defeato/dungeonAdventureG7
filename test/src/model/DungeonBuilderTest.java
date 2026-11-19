@@ -332,9 +332,9 @@ class DungeonBuilderTest {
 
     @Test
     void nullArgumentsRejected() {
-        assertThrows(NullPointerException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> new DungeonBuilder(null, new Random()));
-        assertThrows(NullPointerException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> new DungeonBuilder(factory, null));
     }
 
@@ -411,7 +411,7 @@ class DungeonBuilderTest {
                 () -> new Dungeon(new Room[][] {{a}}, a, stranger));
         assertThrows(IllegalArgumentException.class,
                 () -> new Dungeon(new Room[][] {{a}, {}}, a, a));
-        assertThrows(NullPointerException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> new Dungeon(new Room[][] {{null}}, a, a));
     }
 

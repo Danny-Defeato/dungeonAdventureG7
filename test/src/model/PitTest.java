@@ -2,6 +2,7 @@ package src.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
@@ -44,6 +45,14 @@ class PitTest {
         final String message = new Pit().applyTo(hero, new Random(3));
         final int lost = hero.getMaxHitPoints() - hero.getHitPoints();
         assertTrue(message.contains(String.valueOf(lost)), message);
+    }
+
+    @Test
+    void nullArgumentsRejected() {
+        final Pit pit = new Pit();
+        assertThrows(IllegalArgumentException.class, () -> pit.applyTo(null, new Random(1)));
+        assertThrows(IllegalArgumentException.class,
+                () -> pit.applyTo(new Warrior("Hero"), null));
     }
 
     @Test
