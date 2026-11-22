@@ -59,10 +59,11 @@ public class GameController {
     }
 
     /**
-     * Shows the current hero and room in the window.
+     * Shows the current hero, room and map in the window.
      */
     private void refreshView() {
         myView.getHeroPanel().showHero(myHero);
         myView.getRoomPanel().showRoom(myDungeon.getHeroRoom());
+        myView.getMapPanel().showDungeon(myDungeon);
     }
 }

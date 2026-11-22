@@ -45,6 +45,9 @@ public class GameView extends JFrame {
     /** Shows the current room and the direction buttons. */
     private final RoomPanel myRoomPanel = new RoomPanel();
 
+    /** Shows the dungeon map. */
+    private final MapPanel myMapPanel = new MapPanel();
+
     /**
      * Creates the main window with its menu bar and its two areas: the map
      * in the center and the side panels on the right. The panels start empty;
@@ -58,10 +61,8 @@ public class GameView extends JFrame {
         setJMenuBar(createMenuBar());
         setLayout(new BorderLayout());
 
-        // Map area: the center grows when the window gets bigger.
-        final JPanel mapArea = new JPanel();
-        mapArea.setBorder(BorderFactory.createTitledBorder("Dungeon Map"));
-        add(mapArea, BorderLayout.CENTER);
+        // Map panel: the center grows when the window gets bigger.
+        add(myMapPanel, BorderLayout.CENTER);
 
         // Side area: a fixed-width column on the right for the other panels.
         final JPanel sideArea = new JPanel(new BorderLayout());
@@ -88,6 +89,14 @@ public class GameView extends JFrame {
      */
     public RoomPanel getRoomPanel() {
         return myRoomPanel;
+    }
+    /**
+     * Returns the map panel so the controller can update it.
+     *
+     * @return the map panel
+     */
+    public MapPanel getMapPanel() {
+        return myMapPanel;
     }
 
     /**
