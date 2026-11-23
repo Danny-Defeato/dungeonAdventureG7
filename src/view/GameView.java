@@ -9,6 +9,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 /**
  * The main window of Dungeon Adventure. It holds the menu bar, the dungeon
@@ -38,6 +39,10 @@ public class GameView extends JFrame {
             "Find the four Pillars of OO (A, E, I, P) and reach the exit.\n"
                     + "Move with the direction buttons. Avoid pits, collect potions, "
                     + "and defeat monsters.";
+    /** Explains the map symbols. */
+    private static final String MAP_LEGEND =
+            "  @ hero   i entrance   O exit   A E I P pillars   "
+                    + "H healing   V vision   X pit   M multiple";
 
     /** Shows the hero's information. */
     private final HeroPanel myHeroPanel = new HeroPanel();
@@ -61,8 +66,11 @@ public class GameView extends JFrame {
         setJMenuBar(createMenuBar());
         setLayout(new BorderLayout());
 
-        // Map panel: the center grows when the window gets bigger.
-        add(myMapPanel, BorderLayout.CENTER);
+        // Map column: the map in the center and the legend underneath.
+        final JPanel mapColumn = new JPanel(new BorderLayout());
+        mapColumn.add(myMapPanel, BorderLayout.CENTER);
+        mapColumn.add(new JLabel(MAP_LEGEND), BorderLayout.SOUTH);
+        add(mapColumn, BorderLayout.CENTER);
 
         // Side area: a fixed-width column on the right for the other panels.
         final JPanel sideArea = new JPanel(new BorderLayout());

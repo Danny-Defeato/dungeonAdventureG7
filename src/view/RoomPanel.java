@@ -35,6 +35,12 @@ public class RoomPanel extends JPanel {
     /** Moves the hero west. */
     private final JButton myWestButton = new JButton("West");
 
+    /** Uses a healing potion. */
+    private final JButton myHealingButton = new JButton("Use Healing Potion");
+
+    /** Uses a vision potion. */
+    private final JButton myVisionButton = new JButton("Use Vision Potion");
+
     /**
      * Creates the room panel: a message on top and the direction buttons
      * arranged like a compass below it.
@@ -59,8 +65,14 @@ public class RoomPanel extends JPanel {
         final JPanel holder = new JPanel(new FlowLayout());
         holder.add(grid);
 
+        // Potion buttons side by side, below the direction buttons.
+        final JPanel potions = new JPanel(new FlowLayout());
+        potions.add(myHealingButton);
+        potions.add(myVisionButton);
+
         add(myMessageLabel, BorderLayout.NORTH);
         add(holder, BorderLayout.CENTER);
+        add(potions, BorderLayout.SOUTH);
     }
 
     /**
@@ -73,6 +85,33 @@ public class RoomPanel extends JPanel {
         mySouthButton.addActionListener(e -> theAction.accept(Direction.SOUTH));
         myEastButton.addActionListener(e -> theAction.accept(Direction.EAST));
         myWestButton.addActionListener(e -> theAction.accept(Direction.WEST));
+    }
+    /**
+     * Sets what happens when the potion buttons are clicked.
+     *
+     * @param theHealingAction runs when Use Healing Potion is clicked
+     * @param theVisionAction runs when Use Vision Potion is clicked
+     * @throws IllegalArgumentException if either action is null
+     */
+    public void setPotionActions(final Runnable theHealingAction,
+                                 final Runnable theVisionAction) {
+        if (theHealingAction == null || theVisionAction == null) {
+            throw new IllegalArgumentException("potion actions must not be null");
+        }
+        myHealingButton.addActionListener(e -> theHealingAction.run());
+        myVisionButton.addActionListener(e -> theVisionAction.run());
+    }
+
+    /**
+     * Enables each potion button only if the hero has that potion.
+     *
+     * @param theHasHealing whether the hero has a healing potion
+     * @param theHasVision whether the hero has a vision potion
+     */
+    public void setPotionsEnabled(final boolean theHasHealing,
+                                  final boolean theHasVision) {
+        myHealingButton.setEnabled(theHasHealing);
+        myVisionButton.setEnabled(theHasVision);
     }
 
     /**
