@@ -2,13 +2,20 @@ package src.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import src.model.Dungeon;
 
 /**
  * The main window of Dungeon Adventure. It holds the menu bar, the dungeon
@@ -18,6 +25,16 @@ import javax.swing.JPanel;
  * @version 0.4
  */
 public class GameView extends JFrame {
+
+    /**
+     * The secret shortcut that opens the hidden dungeon view (FR-MNU-2):
+     * Ctrl+Shift+D. It is not shown in any menu.
+     */
+    public static final KeyStroke HIDDEN_VIEW_SHORTCUT = KeyStroke.getKeyStroke(
+            KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+
+    /** The name of the hidden view action in the window's action map. */
+    private static final String HIDDEN_VIEW_ACTION = "showHiddenDungeonView";
 
     /** The width of the window in pixels. */
     private static final int WINDOW_WIDTH = 1100;
@@ -71,6 +88,38 @@ public class GameView extends JFrame {
         sideArea.add(myHeroPanel, BorderLayout.NORTH);
         sideArea.add(myRoomPanel, BorderLayout.CENTER);
         add(sideArea, BorderLayout.EAST);
+    }
+
+    /**
+     * Sets what happens when the player presses the secret hidden view
+     * shortcut ({@link #HIDDEN_VIEW_SHORTCUT}). The shortcut works anywhere in
+     * the window and is not listed in any menu (FR-MNU-2).
+     *
+     * @param theAction the code to run when the shortcut is pressed, not null
+     * @throws IllegalArgumentException if theAction is null
+     */
+    public void setHiddenViewAction(final Runnable theAction) {
+        if (theAction == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(HIDDEN_VIEW_SHORTCUT, HIDDEN_VIEW_ACTION);
+        getRootPane().getActionMap().put(HIDDEN_VIEW_ACTION, new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                theAction.run();
+            }
+        });
+    }
+
+    /**
+     * Opens the hidden testing view that shows the entire dungeon, including
+     * items, monsters and the hero (SRS 3.11). The game is not changed.
+     *
+     * @param theDungeon the dungeon to show, not null
+     */
+    public void showHiddenDungeon(final Dungeon theDungeon) {
+        new HiddenDungeonView(this, theDungeon).setVisible(true);
     }
 
     /**

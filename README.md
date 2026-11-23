@@ -37,6 +37,20 @@ first use and is git-ignored.
     javac -d out -cp "$CP" src/model/MonsterStats.java src/model/SQLiteDatabase.java test/src/model/SQLiteDatabaseTest.java
     java -jar lib/junit-platform-console-standalone-1.10.3.jar execute -cp "out;lib/sqlite-jdbc-3.46.1.3.jar;lib/slf4j-api-2.0.13.jar" --scan-classpath out
 
+## Starting a game
+
+Run `src.controller.DungeonAdventure`. The New Game dialog asks for the hero's
+name (1 to 20 characters, spaces around it are removed) and a class (Warrior,
+Priestess or Thief, each shown with its statistics and special skill). Closing
+the dialog ends the program.
+
+## Hidden dungeon view (for testing and grading)
+
+Press **Ctrl+Shift+D** anywhere in the game window. A separate window shows the
+entire dungeon: every room's doors and items, the hero's position (@) and every
+monster with its location and hit points. It does not change the game and is
+not listed in any menu (SRS FR-MNU-2).
+
 # Group 7 Iteration 1 (Oct 26 - Nov 1, 2026)
 
 TEAM MEMBERS

@@ -39,6 +39,7 @@ public class GameController {
         myHero = Objects.requireNonNull(theHero, "hero");
         myDungeon = Objects.requireNonNull(theDungeon, "dungeon");
         myView.getRoomPanel().setMoveAction(this::move);
+        myView.setHiddenViewAction(() -> myView.showHiddenDungeon(myDungeon));
         refreshView();
         myView.getRoomPanel().showMessage("You are at the entrance. Find the four pillars!");
     }
