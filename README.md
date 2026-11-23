@@ -329,3 +329,53 @@ ISSUES
   the jar from the lib folder.
 - The buttons did nothing until the controller was connected to the room
   panel; fixed.
+
+# Group 7 Iteration 4 (Nov 16 - Nov 22, 2026)
+
+## Alex Douk
+
+WORK COMPLETED
+- Classes Clean Up (PR #26): my classes (Dungeon, DungeonBuilder,
+  HeroFactory, MonsterFactory, MonsterStats, Pit, SQLiteDatabase) now use the
+  my/the naming convention, throw IllegalArgumentException for null
+  arguments, and use named constants instead of magic numbers and strings.
+- New-game dialog: NewGameDialog shows an introduction, a hero name field
+  (1 to 20 characters, spaces trimmed) and Warrior, Priestess and Thief cards
+  with their statistics and special skill (FR-NEW-1 to FR-NEW-3). The game now
+  starts with this dialog and creates the hero with HeroFactory instead of a
+  hardcoded Warrior (FR-NEW-4).
+- Hidden dungeon view: Ctrl+Shift+D opens a window that shows the entire
+  dungeon, the hero's position and every monster with its hit points. It is
+  not in any menu, does not change the game, and is documented in the
+  DungeonAdventure Javadoc and the README (FR-MNU-2).
+- JUnit tests for the dialog's name rules and the hidden view
+  (134 tests passing).
+  
+ISSUES IN ITERATION 4
+- My new-game dialog and hidden view were pushed straight to main instead of
+  through a pull request, because my branch was set to track origin/main.
+  It merged cleanly with Liiban's potion buttons (PR #30) and all tests pass.
+  The branch tracking is fixed.
+- Entering a room does not apply its contents yet: pits do no damage and
+  potions and pillars are not picked up. GameModel needs to call applyTo
+  when the hero moves.
+- The vision potion button reveals rooms with its own code in GameController
+  instead of Dungeon.revealAroundHero(), so the same logic exists twice.
+- The SRS and UML are behind the code in a few places (guardian rule in
+  FR-GEN-5, monster names in FR-MON-2, applyTo(hero, rng) in the UML). These
+  belong to DAT-43.
+  
+## John Nguyen
+
+WORK COMPLETED
+
+ISSUES IN ITERATION 4
+
+
+## Nathan Chiu 
+
+
+## Liiban Isse
+
+ 
+ISSUES
