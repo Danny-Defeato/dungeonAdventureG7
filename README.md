@@ -364,12 +364,46 @@ ISSUES IN ITERATION 4
 - The SRS and UML are behind the code in a few places (guardian rule in
   FR-GEN-5, monster names in FR-MON-2, applyTo(hero, rng) in the UML). These
   belong to DAT-43.
+
   
 ## John Nguyen
 
 WORK COMPLETED
+- GameModel skeleton (DAT-45): GameModel follows the team UML. It holds the
+  hero, the dungeon and the random generator, and has the constructor, getters,
+  the ROOM_PROPERTY constant and addPropertyChangeListener. Its move method
+  moves the hero with Dungeon.moveHero and fires a property change through
+  PropertyChangeSupport (Observer), so the view can react without the model
+  touching the GUI. What happens when the hero enters a room is left as TODOs
+  for Liiban to finish.
+- BattleTest (DAT-42): 20 JUnit tests for Battle. They cover attacks per round,
+  the special skill and potions replacing the normal attacks, blocked attacks,
+  a fainted monster not attacking or healing, monsters healing after being hit
+  (FR-COM-6), one winner per fight and the battle log.
+- CharacterTest (DAT-42): the 26 tests for the DungeonCharacter classes now
+  match the renamed classes and also cover potions, pillars, the Warrior's
+  crushing blow, the Priestess's heal, the Thief's surprise attack and monster
+  healing.
+- Battle fix (DAT-44): corrected the heal log text to "hit points" and renamed
+  a parameter to follow the my/the naming convention.
+- UML/SRS Update (DAT-43): Worked with Nathan on the UML and SRS (4H each). We updated parts of
+  the UML for the changes of the past few weeks, including the new Battle
+  class. Both documents are still behind the code, and the SRS needs a lot of
+  work, so we decided to finish the model, view and controller hookup first and
+  come back to the UML and SRS after it works.
 
 ISSUES IN ITERATION 4
+- GameModel is only a skeleton. Entering a room does not apply its contents or
+  start a battle yet, the game does not end when the hero faints, and the hero
+  can still move during a battle. heroAttack, createMemento and restore are not
+  built.
+- The running game does not use GameModel or Battle yet. DungeonAdventure never
+  creates a GameModel, GameController still calls Dungeon.moveHero directly,
+  and there is no battle screen.
+- The UML and SRS are not finished (DAT-43). The UML needs more work to match
+  the code, and the SRS still needs the DAT-30 edits (ISS-11, FR-MON-2,
+  FR-HERO-7, FR-HERO-8). We put both off until the model, view and controller
+  hookup works.
 
 
 ## Nathan Chiu 
@@ -377,6 +411,9 @@ ISSUES IN ITERATION 4
     each of the new features add and implemented (1H). Noted which ones worked and checked whether it met the
     requirements of the rubric (2H). Researched similar games to ours and noted any inspirations that may enhance 
     our final submission of the game (1H).
+    
+-  DAT-43: Assisted John with updating the UML and SRS. We decided to put it off until later, since there was a lot more than expected 
+    to do, and we wanted to focus on getting the core features of the game finished first (8H).
 
 
 ## Liiban Isse
