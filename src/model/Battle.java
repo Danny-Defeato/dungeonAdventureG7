@@ -198,18 +198,18 @@ public class Battle {
     }
 
     /**
-     * Makes it so that the monster attempts to heal so long as if was hit before
+     * Makes it so that the monster attempts to heal so long as it was hit before
      * and if it is still alive (FR-COM-6).
      *
-     * @param hitsPointsBefore the monster's hit points before the action
+     * @param theHitsPointsBefore the monster's hit points before the action
      * @param theLog the log to add the events to
      */
-    private void monsterTriesToHeal(final int hitsPointsBefore, final StringBuilder theLog) {
-        if (myMonster.isAlive() && myMonster.getHitPoints() < hitsPointsBefore) {
+    private void monsterTriesToHeal(final int theHitsPointsBefore, final StringBuilder theLog) {
+        if (myMonster.isAlive() && myMonster.getHitPoints() < theHitsPointsBefore) {
             final int healed = myMonster.tryHeal(myRng);
             if (healed > 0) {
                 theLog.append(myMonster.getName()).append(" heals for ")
-                        .append(healed).append(" hitpoints.\n");
+                        .append(healed).append(" hit points.\n");
             }
         }
     }
