@@ -380,6 +380,19 @@ ISSUES IN ITERATION 4
 
 
 ## Liiban Isse
+LIIBAN ISSE (9 hours)
+- Map panel (3h): 5x5 grid showing visited rooms with their symbols,
+  unvisited rooms in gray, and @ for the hero; updates after every move.
+- Map legend (2h): line under the map explaining the symbols.
+- Potion buttons (4h): healing and vision potion buttons in the room panel,
+  grayed out when the hero has none; vision reveals nearby rooms on the map.
+ 
+ISSUES
+- The hero can't pick up potions or pillars yet, so the potion buttons stay
+  grayed out. This needs GameModel's room events.
+- The potion buttons still need more testing once potions can be picked up.
+- Vision-potion room revealing is in the controller for now; it should move
+  into GameModel.
 
  
 ISSUES
