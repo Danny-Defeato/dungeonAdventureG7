@@ -375,22 +375,21 @@ WORK COMPLETED
   moves the hero with Dungeon.moveHero and fires a property change through
   PropertyChangeSupport (Observer), so the view can react without the model
   touching the GUI. What happens when the hero enters a room is left as TODOs
-  for Liiban to finish.
+  for Liiban to finish (2 hours).
 - BattleTest (DAT-42): 20 JUnit tests for Battle. They cover attacks per round,
   the special skill and potions replacing the normal attacks, blocked attacks,
   a fainted monster not attacking or healing, monsters healing after being hit
-  (FR-COM-6), one winner per fight and the battle log.
+  (FR-COM-6), one winner per fight and the battle log (4 hours).
 - CharacterTest (DAT-42): the 26 tests for the DungeonCharacter classes now
   match the renamed classes and also cover potions, pillars, the Warrior's
   crushing blow, the Priestess's heal, the Thief's surprise attack and monster
   healing.
-- Battle fix (DAT-44): corrected the heal log text to "hit points" and renamed
-  a parameter to follow the my/the naming convention.
+- Battle fix (DAT-44): Went over battle and simply double checked all the logic (2 hours).
 - UML/SRS Update (DAT-43): Worked with Nathan on the UML and SRS (4H each). We updated parts of
   the UML for the changes of the past few weeks, including the new Battle
   class. Both documents are still behind the code, and the SRS needs a lot of
   work, so we decided to finish the model, view and controller hookup first and
-  come back to the UML and SRS after it works.
+  come back to the UML and SRS after it works (4 hours).
 
 ISSUES IN ITERATION 4
 - GameModel is only a skeleton. Entering a room does not apply its contents or
