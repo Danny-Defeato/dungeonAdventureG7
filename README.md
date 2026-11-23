@@ -373,6 +373,10 @@ ISSUES IN ITERATION 4
 
 
 ## Nathan Chiu 
+-  DAT-51: Once more of the program has been developed, I played around with the game in its current state testing
+    each of the new features add and implemented (1H). Noted which ones worked and checked whether it met the
+    requirements of the rubric (2H). Researched similar games to ours and noted any inspirations that may enhance 
+    our final submission of the game (1H).
 
 
 ## Liiban Isse
